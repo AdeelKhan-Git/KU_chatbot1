@@ -1,0 +1,36 @@
+version: "3.9"
+name: uok_chatbot
+
+services:
+  backend:
+    build:
+      context: ./Backend/Chatbot
+      dockerfile: Dockerfile
+    container_name: chatbot_app
+    volumes:
+      - ./Backend/Chatbot:/Chatbot
+      - ./Backend/Chatbot/data:/data
+      - ./data/ollama:/root/.ollama
+
+    ports:
+      - "8000:8000"   # Django API
+      - "11434:11434" # Ollama
+    env_file:
+      - ./Backend/Chatbot/.env
+    environment:
+      DJANGO_SETTINGS_MODULE: Chatbot.settings
+      OLLAMA_HOST: http://localhost:11434
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./frontend:/frontend/src
+    environment:
+      VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID}
+    depends_on:
+      - backend
+

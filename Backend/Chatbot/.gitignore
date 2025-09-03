@@ -1,0 +1,6 @@
+.env
+data.json
+sqlite3
+.vscode/
+chroma_langchain_db/
+greetingdata.json

@@ -1,0 +1,9 @@
+**/__pycache__
+**/.git
+**/.vscode
+Dockerfile
+.dockerignore
+*.log
+*.sqlite3
+*.md
+chroma_langchain_db/

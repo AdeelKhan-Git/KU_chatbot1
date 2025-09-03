@@ -1,0 +1,34 @@
+
+# Dependency directories
+node_modules
+bower_components
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Environment and secrets
+.env
+.env.local
+.env.development
+.env.production
+.env.*.local
+
+
+
+# Editor config
+.vscode
+.idea
+*.swp
+
+# Tests and coverage
+coverage
+__tests__
+*.test.*
+*.spec.*
