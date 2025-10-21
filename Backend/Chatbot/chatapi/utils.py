@@ -21,7 +21,8 @@ llm = OllamaLLM(
     model_kwargs={"num_predict": 150},
     num_gpu=1,
     keep_alive='10m',
-    streaming=True
+    streaming=True,
+
 )
 
 # Initialize Chroma vector store

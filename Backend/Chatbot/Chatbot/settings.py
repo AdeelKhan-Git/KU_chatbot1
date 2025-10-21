@@ -38,14 +38,23 @@ SECRET_KEY = 'django-insecure-mmmx1owwnus8m=w_r^56$x84(u57i3r##byo0rzrsswp20-m%t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    "ddcc1c32xmk84z-8000.proxy.runpod.net",
-    "localhost",
-    "127.0.0.1",
-    "100.65.24.185"
-]
+ALLOWED_HOSTS = ["*"]
+CORS_ALLOW_ALL_ORIGINS = True
 USE_X_FORWARDED_HOST = True
 
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:8080",   # React local dev
+#     "http://127.0.0.1:5173",
+#     "https://ddcc1c32xmk84z-8000.proxy.runpod.net",
+# ]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8080",
+    "http://127.0.0.1:5173",
+    "http://localhost:5173",
+    "https://octcs1f1z5hj25-8000.proxy.runpod.net/",
+    "https://askuok.netlify.app",
+]
 
 # Application definition
 
@@ -183,17 +192,7 @@ SIMPLE_JWT = {
     'USER_ID_CLAIM': 'user_id',  
 }
 
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",   # React local dev
-    "http://127.0.0.1:5173",
-    "https://ddcc1c32xmk84z-8000.proxy.runpod.net",
-]
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:8080",
-    "http://127.0.0.1:5173",
-    "https://ddcc1c32xmk84z-8000.proxy.runpod.net",
-]
 
 
 
