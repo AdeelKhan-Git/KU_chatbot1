@@ -4,8 +4,9 @@ from rest_framework import status,permissions
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from .models import KnowledgeBase,UploadRecord
-from .utils import chatbot_response,sync_new_entries_to_vector_store
+from .utils import chatbot_response,sync_kb_to_chroma
 from django.http import StreamingHttpResponse
+from .pdf_scrapper import extract_pdf_content
 
 
 # Create your views here.
@@ -34,50 +35,47 @@ class UploadFileView(APIView):
 
     def post(self,request):
         file = request.FILES.get('file')
-
-        if not file:
-            return Response({'error':'no file uploaded'},status=status.HTTP_400_BAD_REQUEST)
         
         try:
-            data = json.load(file)
-            
-            if not isinstance(data, list):
-                return Response({'error':'Json must be a list of objects'}, status=status.HTTP_400_BAD_REQUEST)
-            
+            if not file:
+                 return Response(
+                {"error": "No file uploaded"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-            for i, item in enumerate(data):
-                if not isinstance(item, dict):
-                    return Response({'error':'Invalid not a JSON object.'},status=status.HTTP_400_BAD_REQUEST)
+            if not file.name.lower().endswith(".pdf"):
+                return Response(
+                {"error": "Only PDF files are allowed"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
-                if 'question' not in item or 'answer' not in item:
-                    return Response({"error":"Missing 'question' or 'answer' in some items."},status=status.HTTP_400_BAD_REQUEST)
-
-        except json.JSONDecodeError:
-            return Response({'error':'provided file is not json format'},status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({f'error':'provided file is not pdf format ---{e}'},status=status.HTTP_400_BAD_REQUEST)
 
 
-       
+        data = extract_pdf_content(file)
       
         try:
             inserted_count = 0
             skipped_count = 0
-            for item in data:
 
-                question = item.get('question','').strip()
-                answer =item.get('answer','').strip()
+            for item in data:
+                page = item.get('page')
+                content =item.get('content','').strip()
                 
-                if not question and not answer:
+                if not content:
+                    skipped_count+=1
                     continue
                 
                 
                 exists = KnowledgeBase.objects.filter(
-                    question__iexact=question,
-                    answer__iexact = answer
+                    file_name = file.name,
+                    page=page
                     ).exists()
                 
         
                 if not exists:
-                    KnowledgeBase.objects.create(question=question, answer=answer)
+                    KnowledgeBase.objects.create(file_name=file.name, page=page, content=content)
                     inserted_count += 1
                 else:
                     skipped_count += 1
@@ -90,11 +88,11 @@ class UploadFileView(APIView):
                 )
 
             if inserted_count:
-                sync_new_entries_to_vector_store()
+                sync_kb_to_chroma()
                 print("vector db recreated")
                 
 
-            return Response({'message':"Data upload successfully and vector store rebuilt successfully",
+            return Response({"message": "PDF uploaded, parsed, indexed  and Vector Score rebuild successfully",
                             "inserted":inserted_count,
                             "skipped":skipped_count},
                             status=status.HTTP_200_OK)

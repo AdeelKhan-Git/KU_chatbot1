@@ -27,7 +27,7 @@ MEDIA_URL = '/media/'
 OLLAMA_DATA_DIR = '/data/ollama'
 
 # Chroma vector DB directory (used in your code)
-CHROMA_DB_DIR = '/data/chroma'
+CHROMA_DB_DIR = 'chroma'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -117,7 +117,7 @@ WSGI_APPLICATION = 'Chatbot.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '/data/db.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 

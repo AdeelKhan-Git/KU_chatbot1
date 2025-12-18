@@ -14,8 +14,8 @@ const UploadPdf: React.FC<UploadPdfProps> = ({ onUpload, file }) => {
   const handleFileSelect = (file: File) => {
     const maxSize = 10 * 1024 * 1024;
 
-    if (!file.name.toLowerCase().endsWith(".json")) {
-      toast.error("Only JSON files are allowed");
+    if (!file.name.toLowerCase().endsWith(".pdf")) {
+      toast.error("Only PDF files are allowed");
       return;
     }
 
@@ -84,10 +84,10 @@ const UploadPdf: React.FC<UploadPdfProps> = ({ onUpload, file }) => {
           ) : (
             <div className="text-center mx-auto gap-2 sm:max-w-72 ">
               <p className="text-sm font-semibold text-primary-300 whitespace-pre-line">
-                Supported formats: JSON | Max size: 10MB
+                Supported formats: PDF | Max size: 10MB
               </p>
               <p className="text-sm pb-1 text-primary-300">
-                Drag and Drop a JSON file here or
+                Drag and Drop a PDF file here or
               </p>
             </div>
           )}
@@ -97,7 +97,7 @@ const UploadPdf: React.FC<UploadPdfProps> = ({ onUpload, file }) => {
             type="file"
             id="file-input"
             className="hidden"
-            accept=".json"
+            accept=".pdf"
             onChange={handleFileInputChange}
           />
           <label

@@ -4,6 +4,9 @@ import React, { useEffect, useRef, useState } from "react";
 import Header from "./Header";
 import { Button } from "./ui/button";
 
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
 export default function ChatInterface() {
   const { messages, isLoading, sendMessage, clearMessages } = useChat();
   const [inputValue, setInputValue] = useState("");
@@ -15,7 +18,6 @@ export default function ChatInterface() {
 
   const handleSend = async () => {
     if (!inputValue.trim() || isLoading) return;
-
     const message = inputValue.trim();
     setInputValue("");
     await sendMessage(message);
@@ -30,11 +32,14 @@ export default function ChatInterface() {
 
   return (
     <section className="flex flex-col justify-between min-h-screen bg-[#0C0E16]">
+      {/* Header */}
       <div className="text-white p-5 mb-5 border-b border-gray-100">
         <Header />
       </div>
 
+      {/* Chat Box */}
       <div className="w-full rounded-2xl shadow-xl flex flex-col h-[34rem] bg-[#181A20] border border-[#23242a]">
+        {/* Chat Top Bar */}
         <div className="flex items-center justify-between p-4 border-b border-[#23242a]">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
@@ -42,15 +47,18 @@ export default function ChatInterface() {
             </div>
             <div>
               <h3 className="text-white font-semibold">AskUoK Assistant</h3>
-              <p className="text-gray-400 text-xs">University of Karachi AI</p>
+              <p className="text-gray-400 text-xs">
+                University of Karachi AI
+              </p>
             </div>
           </div>
+
           {messages.length > 0 && (
             <Button
               variant="ghost"
               size="sm"
               onClick={clearMessages}
-              className="text-gray-400 cta hover:text-white"
+              className="text-gray-400 hover:text-white"
             >
               <Trash2 className="w-4 h-4" />
             </Button>
@@ -68,12 +76,12 @@ export default function ChatInterface() {
                 Welcome to AskUoK!
               </h3>
               <p className="text-gray-400 text-sm max-w-md">
-                Ask me anything about University of Karachi - admissions, fees,
-                departments, campus life, or any other university-related
-                questions.
+                Ask anything about University of Karachi — admissions, fees,
+                departments, programs, or campus life.
               </p>
             </div>
           )}
+
           {messages.map((msg) => (
             <div
               key={msg.id}
@@ -82,28 +90,33 @@ export default function ChatInterface() {
               }`}
             >
               <div
-                className={`max-w-[80%] rounded-xl px-4 py-3 text-base shadow ${
+                className={`max-w-[80%] rounded-xl px-4 py-3 shadow ${
                   msg.sender === "user"
                     ? "bg-blue-600 text-white [border-radius:16px_6px_16px_16px]"
                     : "bg-[#23242a] text-gray-100 border border-[#23242a] [border-radius:6px_16px_16px_16px]"
                 }`}
               >
-                <div className="whitespace-pre-line">
-                  {msg.text}
-                   {msg.isStreaming && msg.text.length < 1 && (
-                    <div className="flex space-x-1">
-                      <span className="w-2 h-2 bg-blue-800 rounded-full animate-bounce [animation-delay:0s]"></span>
-                      <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
-                      <span className="w-2 h-2 bg-blue-800 rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                <div className="prose prose-invert max-w-none text-sm leading-relaxed">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {msg.text}
+                  </ReactMarkdown>
+
+                  {msg.isStreaming && msg.text.length < 1 && (
+                    <div className="flex space-x-1 mt-2">
+                      <span className="w-2 h-2 bg-blue-800 rounded-full animate-bounce [animation-delay:0s]" />
+                      <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce [animation-delay:0.2s]" />
+                      <span className="w-2 h-2 bg-blue-800 rounded-full animate-bounce [animation-delay:0.4s]" />
                     </div>
                   )}
                 </div>
               </div>
             </div>
           ))}
+
           <div ref={messagesEndRef} />
         </div>
 
+        {/* Input */}
         <form
           className="border-t border-[#23242a] bg-[#181A20] p-4 flex gap-2"
           onSubmit={(e) => {
@@ -121,10 +134,11 @@ export default function ChatInterface() {
             disabled={isLoading}
             autoFocus
           />
+
           <Button
             type="submit"
             size="sm"
-            className="bg-blue-600 cta h-full hover:bg-blue-700 text-white px-4 py-3 rounded-lg flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-blue-600 h-full hover:bg-blue-700 text-white px-4 py-3 rounded-lg flex items-center justify-center disabled:opacity-50"
             disabled={!inputValue.trim() || isLoading}
           >
             {isLoading ? (
