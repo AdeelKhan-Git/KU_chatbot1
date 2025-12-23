@@ -1,9 +1,9 @@
 import { FileRecordItem, getFileRecords, uploadJsonFile } from "@/api/document";
 import Header from "@/components/Header";
-import { Button } from "@/components/ui/button";
 import UploadHistory from "@/components/UploadHistory";
 import UploadPdf from "@/components/UploadPdf";
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const AdminPanel = () => {
   const [pdfFile, setPdfFile] = useState<File | null>(null);
@@ -17,6 +17,7 @@ const AdminPanel = () => {
       await uploadJsonFile(pdfFile);
       fetchRecords();
       setPdfFile(null);
+      toast.success("Your file has been uploaded.")
     } catch (error) {
       console.error("Error uploading file:", error);
     } finally {
@@ -48,16 +49,16 @@ const AdminPanel = () => {
               <h2 className="text-lg font-semibold">Upload PDF</h2>
               <p className="text-sm text-gray-500 ">Upload a PDF file</p>
             </div>
-            <Button
+            {/* <Button
               variant={"reserveOpposite"}
               disabled={!pdfFile || loading}
               className="cta"
               onClick={handleUploadFile}
             >
               Upload Now
-            </Button>
+            </Button> */}
           </div>
-          <UploadPdf file={pdfFile} onUpload={setPdfFile} />
+          <UploadPdf file={pdfFile} onUpload={setPdfFile} loading={loading} pdfFile={pdfFile} handleUploadFile={handleUploadFile} />
         </div>
         <div className="text-white">
           <h2 className="text-lg font-semibold">Upload History</h2>
