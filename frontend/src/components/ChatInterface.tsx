@@ -92,13 +92,6 @@ export default function ChatInterface() {
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>
                     {msg.text}
                   </ReactMarkdown>
-                  {/* {msg.isStreaming && msg.text.length < 1 && (
-                    <div className="flex space-x-1">
-                      <span className="w-2 h-2 bg-blue-800 rounded-full animate-bounce [animation-delay:0s]"></span>
-                      <span className="w-2 h-2 bg-blue-400 rounded-full animate-bounce [animation-delay:0.2s]"></span>
-                      <span className="w-2 h-2 bg-blue-800 rounded-full animate-bounce [animation-delay:0.4s]"></span>
-                    </div>
-                  )} */}
                 </div>
               </div>
             </div>
