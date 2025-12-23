@@ -15,16 +15,15 @@ class KnowledgeBase(models.Model):
   
 
 class UploadRecord(models.Model):
-    file_name= models.CharField(max_length=200)
-    uploaded_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    file = models.FileField(upload_to="pdfs/",null=True,blank=True)
+    name = models.CharField(max_length=255,null=True,blank=True)
+    uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    inserted = models.PositiveIntegerField()
-    skipped = models.PositiveIntegerField()
 
 
     def __str__(self):
 
-        return f'{self.file_name} - {self.uploaded_by} - {self.uploaded_at}'
+        return f'{self.name} - {self.uploaded_by} - {self.uploaded_at}'
     
 class ChatMessage(models.Model):
     ROLE_CHOICES = [('user','User'),('assistant','Assistant')]
