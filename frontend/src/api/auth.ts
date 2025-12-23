@@ -7,7 +7,7 @@ interface AuthResponse {
 }
 export const loginWithGoogle = async (token: string): Promise<AuthResponse> => {
   try {
-    const response = await apiClient.post("api/user/google/login/", {
+    const response = await apiClient.post("user/google/login/", {
       id_token: token,
     });
     return response;
@@ -22,7 +22,7 @@ export const loginAsAdmin = async (param: {
   password: string;
 }): Promise<AuthResponse> => {
   try {
-    const response = await apiClient.post("api/user/login/", param);
+    const response = await apiClient.post("user/login/", param);
     return response;
   } catch (error) {
     console.error(error);
