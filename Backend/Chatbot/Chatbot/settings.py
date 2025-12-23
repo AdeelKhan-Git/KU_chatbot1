@@ -23,11 +23,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 
-# Ollama data directory (used in your code if needed)
-OLLAMA_DATA_DIR = '/data/ollama'
-
-# Chroma vector DB directory (used in your code)
-CHROMA_DB_DIR = 'chroma'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
