@@ -6,7 +6,7 @@ export const uploadJsonFile = async (file: File) => {
   try {
     const formData = new FormData();
     formData.append("file", file);
-    const response = await apiClient.post("api/upload_file/", formData);
+    const response = await apiClient.post("bot/upload_file/", formData);
     return response;
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -23,11 +23,9 @@ export const uploadJsonFile = async (file: File) => {
 };
 
 export interface FileRecordItem {
-  file_name: string;
-  uploaded_by: string;
+  name: string;
+  admin_name: string;
   uploaded_at: string;
-  inserted_count?: number;
-  skipped_count?: number;
 }
 
 export interface FileRecord {
@@ -35,7 +33,7 @@ export interface FileRecord {
 }
 export const getFileRecords = async (): Promise<FileRecord> => {
   try {
-    const response = await apiClient.get("api/file_records");
+    const response = await apiClient.get("bot/file_records");
     return response.data;
   } catch (error) {
     console.error("Failed to fetch file records:", error);
