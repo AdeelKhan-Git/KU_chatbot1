@@ -19,7 +19,7 @@ class AdminKnowledgeBase(admin.ModelAdmin):
 
 @admin.register(UploadRecord)
 class AdminUpload(admin.ModelAdmin):
-    list_display = ['id', 'file_name','uploaded_by','uploaded_at']
+    list_display = ['id', 'name','uploaded_by','uploaded_at']
 
 @admin.register(ChatMessage)
 class AdminChatmessage(admin.ModelAdmin):
