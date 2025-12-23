@@ -3,10 +3,8 @@ import { apiClient } from "./axios";
 
 export const chatMessage = async (message: string) => {
   try {
-    const response = await apiClient.post("api/chat/", {
-      prompt: message,
-    });
-    return response;
+    const response = await apiClient.post("bot/chat/", { prompt: message });
+    return response.data.response; // full text
   } catch (error) {
     console.error("Chat API error:", error);
     throw error;
@@ -32,9 +30,9 @@ export const chatMessageStream = async (
 
     for (const baseURL of possibleBaseURLs) {
       try {
-        console.log("Trying streaming request to:", `${baseURL}api/chat/`);
+        console.log("Trying streaming request to:", `${baseURL}bot/chat/`);
 
-        const response = await fetch(`${baseURL}api/chat/`, {
+        const response = await fetch(`${baseURL}bot/chat/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -98,6 +96,32 @@ export const chatMessageStream = async (
     throw lastError || new Error("All base URLs failed");
   } catch (error) {
     console.error("Chat streaming error:", error);
+    throw error;
+  }
+};
+// chat.ts
+export const fetchChatData = async () => {
+  try {
+    const token = tokenManager.getToken();
+    if (!token) throw new Error("No authentication token available");
+
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}bot/chat-data/`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || "Failed to fetch chat data");
+    }
+
+    const data = await response.json();
+    return data.data; // array of chat messages
+  } catch (error) {
+    console.error("Fetch chat data error:", error);
     throw error;
   }
 };
