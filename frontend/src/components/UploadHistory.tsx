@@ -9,28 +9,22 @@ const UploadHistory = ({ data }: UploadHistoryProps) => {
   return (
     <div className="border p-4 rounded-lg">
       <div className="space-y-3">
-        {(data.length ? data : []).map((item, index) => (
+        {(data?.length ? data : []).map((item, index) => (
           <div
             key={index}
             className="border rounded-lg p-4 flex justify-between items-center hover:shadow-md transition"
           >
             <div>
-              <p className="font-medium text-blue-600">
-                {shrinkText(item?.file_name, 30)}
+              <p className="text-cyan-400 font-medium">
+                {shrinkText(item?.name, 30)}
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-gray-500 text-sm">
                 {new Date(item?.uploaded_at).toLocaleDateString()}
               </p>
             </div>
-            <div className="text-sm text-gray-700 text-right">
+            <div className="text-sm text-white-700 text-right">
               <p>
-                <span className="font-semibold">By:</span> {item?.uploaded_by}
-              </p>
-              <p>
-                <span className="font-semibold">Inserted:</span>{" "}
-                {item?.inserted_count || 0},{" "}
-                <span className="font-semibold">Skipped:</span>{" "}
-                {item?.skipped_count || 0}
+                <span className="font-semibold">By:</span> {item?.admin_name}
               </p>
             </div>
           </div>
