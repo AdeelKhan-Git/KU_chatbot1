@@ -4,6 +4,19 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+psycopg = {extras = ["binary"], version = "*"}
+django-cors-headers = "*"
+djangorestframework = "*"
+djangorestframework-simplejwt = "*"
+django-allauth = "*"
+drf-yasg = "*"
+django = "*"
+google-ai-generativelanguage = "*"
+google-auth = "*"
+groq = "*"
+pgvector = "*"
+pillow = "*"
+phidata = "*"
 
 [dev-packages]
 
