@@ -17,6 +17,11 @@ groq = "*"
 pgvector = "*"
 pillow = "*"
 phidata = "*"
+pypdf = "*"
+huggingface-hub = "*"
+sentence-transformers = "*"
+cryptography = "*"
+google-generativeai = "*"
 
 [dev-packages]
 
