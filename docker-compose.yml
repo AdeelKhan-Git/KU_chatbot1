@@ -10,16 +10,29 @@ services:
     volumes:
       - ./Backend/Chatbot:/Chatbot
       - ./Backend/Chatbot/data:/data
-      - ./data/ollama:/root/.ollama
 
     ports:
       - "8000:8000"   # Django API
-      - "11434:11434" # Ollama
     env_file:
       - ./Backend/Chatbot/.env
     environment:
       DJANGO_SETTINGS_MODULE: Chatbot.settings
-      OLLAMA_HOST: http://localhost:11434
+      DB_HOST: pgvector
+      DB_PORT: 5432
+    depends_on:
+      - pgvector
+
+  pgvector:
+    image: phidata/pgvector:16
+    container_name: pgvector
+    environment:
+      POSTGRES_DB: ai
+      POSTGRES_USER: ai
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5532:5432"
+    volumes:
+      - pgvolume:/var/lib/postgresql/data
 
   frontend:
     build:
@@ -34,3 +47,5 @@ services:
     depends_on:
       - backend
 
+volumes:
+  pgvolume:
