@@ -6,8 +6,11 @@ django-allauth
 drf-yasg
 django
 google-ai-generativelanguage
+google-generativeai 
 google-auth
-groq
 pgvector
 pillow
 phidata
+pypdf
+sqlalchemy
+openai
