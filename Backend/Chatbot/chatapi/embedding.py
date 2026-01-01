@@ -1,17 +1,14 @@
-
-from phi.embedder.google import GeminiEmbedder
 import os
+from phi.embedder.openai import OpenAIEmbedder
 
 
 
-gemini_api_key = os.environ.get("GOOGLE_API_KEY")
+open_api_key = os.environ.get("OPENAI_API_KEY")
 
 
-
-
-gemini_embedder = GeminiEmbedder(
-    model="models/text-embedding-004",
-    api_key=gemini_api_key
+openai_embedder = OpenAIEmbedder(
+    model="text-embedding-3-large",
+    api_key=open_api_key,
 )
 
 
