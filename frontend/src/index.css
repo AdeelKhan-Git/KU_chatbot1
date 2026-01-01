@@ -16,6 +16,7 @@ body {
   }
 }
 
+
 @layer base {
   :root {
     --card: 0 0% 100%;
@@ -76,4 +77,77 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.markdown-body {
+  background-color: #23242a; /* Dark background */
+  color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+}
+
+/* Table styles */
+.markdown-body table {
+  width: 100%;
+  border-collapse: separate; /* needed for border-radius */
+  border-spacing: 0; /* remove extra spacing between cells */
+  margin-bottom: 1rem;
+  border-radius: 10px; /* round the table corners */
+  overflow: hidden; /* clip inner cells to match rounded corners */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.markdown-body th,
+.markdown-body td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+
+.markdown-body th {
+  background-color: #001f7f; /* dark blue header */
+  color: #fff;
+}
+
+.markdown-body td {
+  background-color: #0f3b8c; /* lighter blue for rows */
+  color: #fff;
+}
+
+/* Alternate row colors (optional for readability) */
+.markdown-body tr:nth-child(even) td {
+  background-color: #1a4d9c;
+}
+
+/* Rounded borders for first and last cells in header and last row */
+.markdown-body th:first-child {
+  border-top-left-radius: 10px;
+}
+.markdown-body th:last-child {
+  border-top-right-radius: 10px;
+}
+.markdown-body tr:last-child td:first-child {
+  border-bottom-left-radius: 10px;
+}
+.markdown-body tr:last-child td:last-child {
+  border-bottom-right-radius: 10px;
+}
+
+/* List styles */
+.markdown-body ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.markdown-body li {
+  margin-bottom: 10px;
+  padding: 12px 15px;
+  border-radius: 8px;
+  background-color: #111; /* slightly lighter than background */
+  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.markdown-body li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
 }
