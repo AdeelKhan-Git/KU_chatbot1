@@ -2,16 +2,6 @@ from django.db import models
 from user.models import User
 # Create your models here.
 
-class KnowledgeBase(models.Model):
-    file_name = models.CharField(max_length=250,null=True,blank=True)
-    page = models.PositiveIntegerField(null=True,blank=True)
-    content = models.TextField(null=True,blank=True)
-
-    class Meta:
-        unique_together = ('file_name','page')
-
-    def __str__(self):
-        return f"{self.file_name}  - Page {self.page}"
   
 
 class UploadRecord(models.Model):
