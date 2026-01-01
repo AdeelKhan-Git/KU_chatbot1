@@ -37,11 +37,6 @@ ALLOWED_HOSTS = ["*"]
 CORS_ALLOW_ALL_ORIGINS = True
 USE_X_FORWARDED_HOST = True
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:8080",   # React local dev
-#     "http://127.0.0.1:5173",
-#     "https://ddcc1c32xmk84z-8000.proxy.runpod.net",
-# ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:8080",
@@ -109,13 +104,22 @@ WSGI_APPLICATION = 'Chatbot.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'ai',
+        'USER': 'ai',
+        'PASSWORD': 'ai',
+        'HOST': 'localhost',
+        'PORT': '5532',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -164,7 +168,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
