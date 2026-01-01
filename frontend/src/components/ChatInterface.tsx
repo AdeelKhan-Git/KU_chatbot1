@@ -88,11 +88,11 @@ export default function ChatInterface() {
                   : "bg-[#23242a] text-gray-100 border border-[#23242a] [border-radius:6px_16px_16px_16px]"
                   }`}
               >
-                <div className="whitespace-pre-line">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {msg.text}
-                  </ReactMarkdown>
-                </div>
+           <div className="whitespace-pre-line markdown-body">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  {msg.text}
+                </ReactMarkdown>
+              </div>
               </div>
             </div>
           ))}
