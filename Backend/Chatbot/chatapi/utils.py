@@ -54,7 +54,7 @@ instructions = [
     "Use bullet points for lists.",
     "Use double newlines between paragraphs.",
     "Use headers (###) for sections.",
-    "If a user greets you, respond politely.",
+    "If a user greets you, respond politely, and always introduce yourself when your greets",
     "If you present tabular data, always format it as a Markdown table with headers and pipe-separated columns. Include proper alignmnt with --- under headers.",
     "Provide information strictly from the knowledge base.",
     "If information is missing, reply exactly with: I don't have information about that."
@@ -74,6 +74,8 @@ agent = Agent(
     api_key = open_api_key,
     description=description,
     instructions=instructions,
+    add_history_to_messages=True,
+    num_history_responses=5,
     markdown=True,
     stream=True,
     use_knowledge=True,
