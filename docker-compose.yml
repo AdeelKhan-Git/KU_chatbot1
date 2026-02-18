@@ -18,7 +18,7 @@ services:
     environment:
       DJANGO_SETTINGS_MODULE: Chatbot.settings
       DB_HOST: pgvector
-      DB_PORT: 5432
+      DB_PORT: "5432"
     depends_on:
       - pgvector
 
