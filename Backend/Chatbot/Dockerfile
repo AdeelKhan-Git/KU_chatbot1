@@ -29,4 +29,4 @@ COPY . /Chatbot/
 EXPOSE 8000 
 
 # Run Django
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["sh", "-c", "gunicorn Chatbot.wsgi:application --bind 0.0.0.0:$PORT"]
