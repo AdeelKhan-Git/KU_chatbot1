@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -15,7 +15,6 @@ body {
     display: none;
   }
 }
-
 
 @layer base {
   :root {
@@ -80,74 +79,69 @@ body {
 }
 
 .markdown-body {
-  background-color: #23242a; /* Dark background */
   color: #fff;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  padding: 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Table styles */
 .markdown-body table {
   width: 100%;
-  border-collapse: separate; /* needed for border-radius */
-  border-spacing: 0; /* remove extra spacing between cells */
+  border-collapse: collapse;
   margin-bottom: 1rem;
-  border-radius: 10px; /* round the table corners */
-  overflow: hidden; /* clip inner cells to match rounded corners */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  border: 1px solid #23242a;
 }
 
 .markdown-body th,
 .markdown-body td {
   padding: 0.75rem 1rem;
+  border: 1px solid #23242a;
   text-align: left;
 }
 
 .markdown-body th {
-  background-color: #001f7f; /* dark blue header */
-  color: #fff;
+  background-color: #1a1b23;
+  font-weight: 600;
 }
 
-.markdown-body td {
-  background-color: #0f3b8c; /* lighter blue for rows */
-  color: #fff;
-}
-
-/* Alternate row colors (optional for readability) */
-.markdown-body tr:nth-child(even) td {
-  background-color: #1a4d9c;
-}
-
-/* Rounded borders for first and last cells in header and last row */
-.markdown-body th:first-child {
-  border-top-left-radius: 10px;
-}
-.markdown-body th:last-child {
-  border-top-right-radius: 10px;
-}
-.markdown-body tr:last-child td:first-child {
-  border-bottom-left-radius: 10px;
-}
-.markdown-body tr:last-child td:last-child {
-  border-bottom-right-radius: 10px;
+.markdown-body tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.02);
 }
 
 /* List styles */
+.markdown-body ul,
+.markdown-body ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
 .markdown-body ul {
-  list-style-type: none;
-  padding-left: 0;
+  list-style-type: disc;
+}
+
+.markdown-body ol {
+  list-style-type: decimal;
 }
 
 .markdown-body li {
-  margin-bottom: 10px;
-  padding: 12px 15px;
-  border-radius: 8px;
-  background-color: #111; /* slightly lighter than background */
-  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
 }
 
-.markdown-body li:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+.markdown-body li p {
+  margin: 0;
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.markdown-body p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
 }
