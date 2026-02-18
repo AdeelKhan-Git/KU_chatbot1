@@ -193,7 +193,6 @@ body {
 
 @media (min-width: 1920px) {
   .smoke-container {
-    height: 700px;
     width: 250px;
     top: 72%;
     left: 32%;
@@ -262,7 +261,9 @@ svg path {
   border-radius: 30px;
   font-size: 0.85rem;
   cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 }
 .reserve-btn:hover {
   background-color: #e6e6e6;
@@ -475,7 +476,8 @@ svg path {
   background-color: #1593c9;
   color: #ffffff;
   border-radius: 9999px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
     0 4px 6px -2px rgba(0, 0, 0, 0.05);
   position: fixed;
   bottom: 2.5rem;
