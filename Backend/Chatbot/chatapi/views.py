@@ -10,7 +10,7 @@ from .embedding import openai_embedder
 from phi.knowledge.pdf import PDFKnowledgeBase
 from phi.vectordb.pgvector import PgVector2
 from .serializer import ChatMessageSerializer,UploadSerializer
-from .utils import ask_phi,SafePDFReader
+from .utils import ask_phi,SafePDFReader,posgre_url
 from phi.document.chunking.document import DocumentChunking
 
 
@@ -65,7 +65,7 @@ class UploadFileView(APIView):
                     path=pdf.file.path,
                     vector_db=PgVector2(
                         collection="UoK_Data",
-                        db_url="postgresql+psycopg://ai:ai@localhost:5532/ai",
+                        db_url=posgre_url,
                         embedder=openai_embedder
                         
                     ),
