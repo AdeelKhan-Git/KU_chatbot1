@@ -14,3 +14,4 @@ phidata
 pypdf
 sqlalchemy
 openai
+gunicorn
