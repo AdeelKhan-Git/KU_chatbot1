@@ -15,7 +15,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 PDF_DIR = os.path.join(BASE_DIR, "media", "pdfs")
 
-posgre_url = "postgresql+psycopg://ai:ai@pgvector:5432/ai"
+posgre_url = os.getenv("DATABASE_URL")
 
 open_api_key = os.environ.get("OPENAI_API_KEY")
 
