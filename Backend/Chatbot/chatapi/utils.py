@@ -15,6 +15,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 PDF_DIR = os.path.join(BASE_DIR, "media", "pdfs")
 
+posgre_url = "postgresql+psycopg://ai:ai@pgvector:5432/ai"
 
 open_api_key = os.environ.get("OPENAI_API_KEY")
 
@@ -37,7 +38,7 @@ pdf_knowledge_base = PDFKnowledgeBase(
     path=PDF_DIR,
     vector_db=PgVector2(
         collection="UoK_Data",
-        db_url="postgresql+psycopg://ai:ai@pgvector:5432/ai",
+        db_url=posgre_url,
         embedder=openai_embedder
         
     ),
@@ -65,11 +66,11 @@ instructions = [
 agent = Agent(
     model=OpenAIChat(id="gpt-4o"),
     memory=AgentMemory(
-        db=PgMemoryDb(table_name="agent_memory", db_url="postgresql+psycopg://ai:ai@pgvector:5432/ai"),
+        db=PgMemoryDb(table_name="agent_memory", db_url=posgre_url),
         create_user_memories=True,
         create_session_summary=True
     ),
-    storage=PgAgentStorage(table_name="University_of_Karachi", db_url="postgresql+psycopg://ai:ai@pgvector:5432/ai"),
+    storage=PgAgentStorage(table_name="University_of_Karachi", db_url=posgre_url),
     knowledge_base=pdf_knowledge_base,
     api_key = open_api_key,
     description=description,
