@@ -2,7 +2,9 @@ import Header from "./Header";
 
 export default function HeroSection() {
   return (
-    <div id="hero">
+    <div id="hero" style={{
+      overflowY: "hidden"
+    }}>
       <Header />
       <div className="content">
         <p className="left-text">UNIVERSITY OF KARACHI</p>
