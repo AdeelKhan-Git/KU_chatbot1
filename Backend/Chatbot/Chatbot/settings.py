@@ -38,13 +38,7 @@ ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:8080",
-    "http://127.0.0.1:5173",
-    "http://localhost:5173",
-    "https://octcs1f1z5hj25-8000.proxy.runpod.net/",
-    "https://askuok.netlify.app",
-]
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
 
 # Application definition
 
