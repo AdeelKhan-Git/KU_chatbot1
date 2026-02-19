@@ -7,7 +7,7 @@ import axios, {
 } from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL || "http://127.0.0.1:8000/",
+  baseURL: import.meta.env.VITE_BASE_URL || "https://kuchatbot1-production.up.railway.app",
 });
 
 api.interceptors.request.use(
