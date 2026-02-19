@@ -19,8 +19,9 @@ WORKDIR /Chatbot
 # Copy requirements first (better cache usage)
 COPY requirements.txt .
 
-# Install Python dependencies inside venv
-RUN pip install --upgrade pip && pip install --prefer-binary -r requirements.txt
+# Upgrade pip and install dependencies
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the full Django project
 COPY . /Chatbot/
