@@ -12,7 +12,7 @@ export const uploadJsonFile = async (file: File) => {
     if (error instanceof AxiosError) {
       toast.error(
         error.response?.data?.error ||
-          "Failed to upload JSON file. Please try again."
+          "Failed to upload PDF file. Please try again."
       );
     } else {
       toast.error("Unexpected error occurred. Please try again.");
