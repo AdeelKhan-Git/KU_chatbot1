@@ -15,3 +15,5 @@ pypdf
 sqlalchemy
 openai
 gunicorn
+whitenoise
+dj-database-url
