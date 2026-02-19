@@ -22,8 +22,7 @@ export const chatMessageStream = async (
     }
     const possibleBaseURLs = [
       import.meta.env.VITE_BASE_URL,
-      "http://127.0.0.1:8000/",
-      "http://localhost:8000/",
+     "https://kuchatbot1-production.up.railway.app"
     ].filter(Boolean);
 
     let lastError = null;
