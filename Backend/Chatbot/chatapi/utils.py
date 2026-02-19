@@ -15,7 +15,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 PDF_DIR = os.path.join(BASE_DIR, "media", "pdfs")
 
-posgre_url = os.getenv("DATABASE_URL")
+posgre_url = os.getenv("VECTOR_DB_URL")
 
 open_api_key = os.environ.get("OPENAI_API_KEY")
 
