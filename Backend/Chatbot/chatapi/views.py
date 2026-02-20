@@ -10,9 +10,9 @@ from .embedding import openai_embedder
 from phi.knowledge.pdf import PDFKnowledgeBase
 from phi.vectordb.pgvector import PgVector2
 from .serializer import ChatMessageSerializer,UploadSerializer
-from .utils import ask_phi,SafePDFReader,posgre_url
+from .utils import ask_phi,SafePDFReader,posgre_url,agent
 from phi.document.chunking.document import DocumentChunking
-
+from asgiref.sync import sync_to_async
 
 
 
@@ -40,9 +40,9 @@ class ChatBotAPIView(APIView):
                     
 class UploadFileView(APIView):
     permission_classes = [permissions.IsAdminUser]
-    parser_classes = [MultiPartParser,FormParser]
+    parser_classes = [MultiPartParser]
 
-    def post(self, request):
+    async def  post(self, request):
         file = request.FILES.get("file")
 
         if not file:
@@ -51,38 +51,16 @@ class UploadFileView(APIView):
         if not file.name.lower().endswith(".pdf"):
             return Response({"error": "Only PDF files allowed"}, status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            with transaction.atomic():
-                pdf = UploadRecord(
-                            file=file,
-                            name=file.name,
-                            uploaded_by=request.user,
+        
+        pdf = await UploadRecord.objects.acreate(
+                file=file,
+                name=file.name,
+                uploaded_by=request.user,
                         )
 
+        await sync_to_async(agent.knowledge.load)(recreate=False)
 
-        
-                pdf_knowledge_base = PDFKnowledgeBase(
-                    path=pdf.file.path,
-                    vector_db=PgVector2(
-                        collection="UoK_Data",
-                        db_url=posgre_url,
-                        embedder=openai_embedder
-                        
-                    ),
-                    reader=SafePDFReader(
-                        chunk=True,
-                        chunking_strategy = DocumentChunking(chunk_size=5000, overlap=150)),
-                    )
-                
-    
-                 # Re-index knowledge base
-                pdf_knowledge_base.load()
-
-                pdf.save()
-        
-        except Exception as e:
-            return Response({'error': f"Failed to process PDF: {str(e)}"},status=status.HTTP_400_BAD_REQUEST)
-        
+  
         return Response(
             {
                 "message": "PDF uploaded and indexed successfully",
