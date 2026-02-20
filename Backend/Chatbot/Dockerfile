@@ -27,7 +27,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /Chatbot/
 
 # Expose Django
-EXPOSE 8000 
+EXPOSE 8080
 
 # Run Django
 CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn Chatbot.wsgi:application --bind 0.0.0.0:$PORT"]
