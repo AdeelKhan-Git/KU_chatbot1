@@ -52,7 +52,7 @@ class UploadFileView(APIView):
             return Response({"error": "Only PDF files allowed"}, status=status.HTTP_400_BAD_REQUEST)
 
         
-        pdf = await UploadRecord.objects.acreate(
+        pdf = await sync_to_async(UploadRecord.objects.create)(
                 file=file,
                 name=file.name,
                 uploaded_by=request.user,
