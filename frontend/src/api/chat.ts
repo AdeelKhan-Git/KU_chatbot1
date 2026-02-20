@@ -22,6 +22,8 @@ export const chatMessageStream = async (
     }
     const possibleBaseURLs = [
       import.meta.env.VITE_BASE_URL,
+      "https://kuchatbot-production.up.railway.app/"
+
     ].filter(Boolean);
 
     let lastError = null;
