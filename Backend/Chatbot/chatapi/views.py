@@ -12,7 +12,7 @@ from phi.vectordb.pgvector import PgVector2
 from .serializer import ChatMessageSerializer,UploadSerializer
 from .utils import ask_phi,SafePDFReader,posgre_url,agent
 from phi.document.chunking.document import DocumentChunking
-from asgiref.sync import sync_to_async
+
 
 
 
@@ -42,7 +42,7 @@ class UploadFileView(APIView):
     permission_classes = [permissions.IsAdminUser]
     parser_classes = [MultiPartParser]
 
-    async def  post(self, request):
+    def post(self, request):
         file = request.FILES.get("file")
 
         if not file:
@@ -52,13 +52,13 @@ class UploadFileView(APIView):
             return Response({"error": "Only PDF files allowed"}, status=status.HTTP_400_BAD_REQUEST)
 
         
-        pdf = await sync_to_async(UploadRecord.objects.create)(
+        pdf = UploadRecord.objects.create(
                 file=file,
                 name=file.name,
                 uploaded_by=request.user,
                         )
 
-        await sync_to_async(agent.knowledge.load)(recreate=False)
+        agent.knowledge.load(recreate=False)
 
   
         return Response(
