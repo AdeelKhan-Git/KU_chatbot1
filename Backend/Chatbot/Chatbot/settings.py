@@ -11,9 +11,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-import os
+import os,dj_database_url
 from dotenv import load_dotenv
-import dj_database_url
+
 
 load_dotenv()
 
@@ -39,6 +39,20 @@ CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "").split(",")
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+# DEBUG = True
+
+# ALLOWED_HOSTS = ["*"]
+# CORS_ALLOW_ALL_ORIGINS = True
+# USE_X_FORWARDED_HOST = True
+
+
+# CSRF_TRUSTED_ORIGINS = [
+#     "http://localhost:8080",
+#     "http://127.0.0.1:5173",
+#     "http://localhost:5173",
+#     "https://octcs1f1z5hj25-8000.proxy.runpod.net/",
+#     "https://askuok.netlify.app",
+# ]
 
 # Application definition
 
@@ -105,6 +119,17 @@ WSGI_APPLICATION = 'Chatbot.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+# DATABASES = {
+#         'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.getenv("POSTGRES_DB"),
+#         'USER': os.getenv("POSTGRES_USER"),
+#         'PASSWORD': os.getenv("POSTGRES_PASSWORD"),
+#         'HOST': os.getenv("DB_HOST"),
+#         'PORT': os.getenv("DB_PORT"),
+#     }
+# }
+
 DATABASES = {
     "default": dj_database_url.config(
         default=os.getenv("DATABASE_URL"),
