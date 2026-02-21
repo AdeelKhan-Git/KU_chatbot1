@@ -1,20 +1,13 @@
 from datetime import timedelta
-from django.db import transaction
 from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework import status,permissions
-from rest_framework.parsers import MultiPartParser,FormParser
+from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 from .models import UploadRecord,ChatMessage
-from .embedding import openai_embedder
-from phi.knowledge.pdf import PDFKnowledgeBase
-from phi.vectordb.pgvector import PgVector2
 from .serializer import ChatMessageSerializer,UploadSerializer
-from .utils import ask_phi,SafePDFReader,posgre_url,agent
-from phi.document.chunking.document import DocumentChunking
-
-
-
+from .utils import ask_phi
+from .task import process_pdf
 
 # Create your views here.
 
@@ -50,6 +43,8 @@ class UploadFileView(APIView):
 
         if not file.name.lower().endswith(".pdf"):
             return Response({"error": "Only PDF files allowed"}, status=status.HTTP_400_BAD_REQUEST)
+        if file.size > 10 * 1024 * 1024:
+            return Response({"error": "Max 10MB file allowed"}, status=status.HTTP_400_BAD_REQUEST)
 
         
         pdf = UploadRecord.objects.create(
@@ -57,8 +52,9 @@ class UploadFileView(APIView):
                 name=file.name,
                 uploaded_by=request.user,
                         )
+        
 
-        agent.knowledge.load(recreate=False)
+        process_pdf.delay(pdf.id)
 
   
         return Response(
