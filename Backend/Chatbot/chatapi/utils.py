@@ -43,7 +43,7 @@ pdf_knowledge_base = PDFKnowledgeBase(
         embedder=openai_embedder
         
     ),
-    reader=SafePDFReader(chunk=True,chunking_strategy = DocumentChunking(chunk_size=5000, overlap=150)),
+    reader=SafePDFReader(chunk=True,chunking_strategy = DocumentChunking(chunk_size=800, overlap=150)),
 )
 
 
