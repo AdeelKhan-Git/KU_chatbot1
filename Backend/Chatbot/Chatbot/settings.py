@@ -11,9 +11,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-import os,dj_database_url
+import os
 from dotenv import load_dotenv
-
+import dj_database_url
 
 load_dotenv()
 
@@ -168,6 +168,13 @@ REST_FRAMEWORK = {
 }
 
 
+#celery 
+
+
+# CELERY_BROKER_URL = 'redis://localhost:6379/0' 
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = os.getenv("REDIS_PUBLIC_URL")
+CELERY_RESULT_BACKEND = os.getenv("REDIS_PUBLIC_URL")
 
 
 # Internationalization
