@@ -5,7 +5,7 @@ from .models import UploadRecord,ChatMessage
 
 @admin.register(UploadRecord)
 class AdminUpload(admin.ModelAdmin):
-    list_display = ['id', 'name','uploaded_by','uploaded_at']
+    list_display = ['id', 'name','status','total_chunks','processed_chunks','uploaded_by','uploaded_at']
 
 @admin.register(ChatMessage)
 class AdminChatmessage(admin.ModelAdmin):
