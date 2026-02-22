@@ -59,8 +59,9 @@ class UploadFileView(APIView):
   
         return Response(
             {
-                "message": "PDF uploaded and indexed successfully",
+                "message": "PDF uploaded and Processing started",
                 "file": pdf.name,
+                "status": pdf.status
             },
             status=status.HTTP_201_CREATED,
         )
@@ -77,7 +78,21 @@ class UploadedDataListView(APIView):
 
         return Response({'message':serializer.data}, status=status.HTTP_200_OK)
      
+class UploadStatusView(APIView):
+    permission_classes = [permissions.IsAdminUser]
+    def get(self, request, pdf_id):
 
+        try:
+            pdf = UploadRecord.objects.get(id=pdf_id)
+
+            return Response({
+                "status": pdf.status,
+                "total_chunks": pdf.total_chunks,
+                "processed_chunks": pdf.processed_chunks
+
+            })
+        except UploadRecord.DoesNotExist:
+            return Response({"error":"Pdf record not Found"}, status= status.HTTP_404_NOT_FOUND)
 
 
 
