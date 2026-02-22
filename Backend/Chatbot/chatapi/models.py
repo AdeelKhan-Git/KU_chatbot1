@@ -5,10 +5,19 @@ from user.models import User
   
 
 class UploadRecord(models.Model):
+    STATUS_CHOICES = [
+        ("processing", "Processing"),
+        ("completed", "Completed"),
+        ("failed", "Failed"),
+    ]
+
     file = models.FileField(upload_to="pdfs/",null=True,blank=True)
     name = models.CharField(max_length=255,null=True,blank=True)
     uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='processing')
+    total_chunks = models.IntegerField(default=0)
+    processed_chunks = models.IntegerField(default=0)
 
 
     def __str__(self):
