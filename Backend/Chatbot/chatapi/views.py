@@ -43,8 +43,7 @@ class UploadFileView(APIView):
 
         if not file.name.lower().endswith(".pdf"):
             return Response({"error": "Only PDF files allowed"}, status=status.HTTP_400_BAD_REQUEST)
-        if file.size > 10 * 1024 * 1024:
-            return Response({"error": "Max 10MB file allowed"}, status=status.HTTP_400_BAD_REQUEST)
+
 
         
         pdf = UploadRecord.objects.create(
@@ -56,10 +55,10 @@ class UploadFileView(APIView):
 
         process_pdf.delay(pdf.id)
 
-  
         return Response(
             {
                 "message": "PDF uploaded and Processing started",
+                "id":pdf.id,
                 "file": pdf.name,
                 "status": pdf.status
             },
@@ -72,11 +71,12 @@ class UploadedDataListView(APIView):
     permission_classes = [permissions.IsAdminUser]
     def get(self, request):
         
-        records = UploadRecord.objects.all().order_by('-uploaded_at')
+        records = UploadRecord.objects.filter(status="completed").order_by('-uploaded_at')
 
         serializer =  UploadSerializer(records,many=True)
 
         return Response({'message':serializer.data}, status=status.HTTP_200_OK)
+    
      
 class UploadStatusView(APIView):
     permission_classes = [permissions.IsAdminUser]
@@ -86,9 +86,9 @@ class UploadStatusView(APIView):
             pdf = UploadRecord.objects.get(id=pdf_id)
 
             return Response({
+                "id":pdf.id,
                 "status": pdf.status,
-                "total_chunks": pdf.total_chunks,
-                "processed_chunks": pdf.processed_chunks
+                "file": pdf.name
 
             })
         except UploadRecord.DoesNotExist:
