@@ -11,6 +11,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 RUN apt-get update && apt-get install -y \
     gcc \
     libpq-dev \
+    python3-dev \
+    build-essential \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
