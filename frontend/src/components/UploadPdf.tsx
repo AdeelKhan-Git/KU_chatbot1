@@ -15,17 +15,17 @@ const UploadPdf: React.FC<UploadPdfProps> = ({ onUpload, file, loading, handleUp
   const [isDragOver, setIsDragOver] = useState(false);
 
   const handleFileSelect = (file: File) => {
-    // const maxSize = 10 * 1024 * 1024;
+    const maxSize = 10 * 1024 * 1024;
 
     if (!file.name.toLowerCase().endsWith(".pdf")) {
       toast.error("Only PDF files are allowed");
       return;
     }
 
-    // if (file.size > maxSize) {
-    //   toast.error("File size must be less than 10MB");
-    //   return;
-    // }
+    if (file.size > maxSize) {
+      toast.error("File size must be less than 10MB");
+      return;
+    }
 
     onUpload && onUpload(file);
   };
@@ -71,9 +71,16 @@ const UploadPdf: React.FC<UploadPdfProps> = ({ onUpload, file, loading, handleUp
       >
 
         {loading ? (
-          <div className="size-14 animate-spin text-white">
-            <Loader2 className="size-full" />
-          </div>
+          <>
+            <div className="size-14 animate-spin text-white">
+              <Loader2 className="size-full" />
+            </div>
+            <div className="flex gap-0.5 flex-col">
+              <span>PDF is processing. It may take a while.</span>
+              {/* <span></span> */}
+              <span className="font-bold"><b>Please Wait...!</b></span>
+            </div>
+          </>
         ) : (
           <>
             <div className="gap-4">
