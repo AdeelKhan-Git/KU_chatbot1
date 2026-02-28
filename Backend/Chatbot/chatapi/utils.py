@@ -4,7 +4,7 @@ from phi.knowledge.pdf import PDFKnowledgeBase, PDFReader
 from phi.vectordb.pgvector import PgVector2
 from phi.agent import Agent,AgentMemory
 from .models import ChatMessage
-from phi.document.chunking.document import DocumentChunking
+from phi.document.chunking.semantic import SemanticChunking
 from .embedding import openai_embedder
 from phi.storage.agent.postgres import PgAgentStorage 
 from phi.memory.db.postgres import PgMemoryDb
@@ -15,8 +15,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 PDF_DIR = os.path.join(BASE_DIR, "media", "pdfs")
 
-posgre_url = os.getenv("DATABASE_URL")
-# posgre_url = "postgresql+psycopg://ai:ai@localhost:5532/ai"
+# posgre_url = os.getenv("DATABASE_URL")
+posgre_url = "postgresql+psycopg://ai:ai@localhost:5532/ai"
 
 open_api_key = os.environ.get("OPENAI_API_KEY")
 
@@ -35,17 +35,23 @@ class SafePDFReader(PDFReader):
         return safe_docs
 
 
-pdf_knowledge_base = PDFKnowledgeBase(
-    path=PDF_DIR,
-    vector_db=PgVector2(
-        collection="UoK_Data",
-        db_url=posgre_url,
-        embedder=openai_embedder
-        
-    ),
-    reader=SafePDFReader(chunk=True,chunking_strategy = DocumentChunking(chunk_size=800, overlap=150)),
-)
-
+def get_pdf_knowledge_base(path: str):
+    return PDFKnowledgeBase(
+        path=path,
+        vector_db=PgVector2(
+            collection="UoK_Data",
+            db_url=posgre_url,
+            embedder=openai_embedder
+        ),
+        reader=SafePDFReader(
+            chunk=True,
+            chunking_strategy=SemanticChunking(
+                chunk_size=2500,
+                similarity_threshold=0.6,
+                embedder=openai_embedder
+            ),
+        ),
+    )
 
 
 
@@ -72,7 +78,7 @@ agent = Agent(
         create_session_summary=True
     ),
     storage=PgAgentStorage(table_name="University_of_Karachi", db_url=posgre_url),
-    knowledge_base=pdf_knowledge_base,
+    knowledge_base=get_pdf_knowledge_base(PDF_DIR),
     api_key = open_api_key,
     description=description,
     instructions=instructions,
