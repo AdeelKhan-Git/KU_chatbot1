@@ -6,3 +6,8 @@ chroma_langchain_db/
 greetingdata.json
 media/
 Chatbot/__pycache__
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
