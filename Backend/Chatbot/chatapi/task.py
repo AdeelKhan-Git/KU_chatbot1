@@ -1,8 +1,6 @@
 from celery import shared_task
 from .models import UploadRecord
-from .embedding import openai_embedder
 from .utils import get_pdf_knowledge_base
-from phi.document.chunking.semantic import SemanticChunking
 
 @shared_task
 def process_pdf(upload_id):
