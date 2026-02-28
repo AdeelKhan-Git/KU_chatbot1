@@ -4,7 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-psycopg = {extras = ["binary"], version = "*"}
+psycopg2-binary = "*"
+psycopg-binary = "*"
 django-cors-headers = "*"
 djangorestframework = "*"
 djangorestframework-simplejwt = "*"
@@ -12,16 +13,21 @@ django-allauth = "*"
 drf-yasg = "*"
 django = "*"
 google-ai-generativelanguage = "*"
+google-generativeai = "*"
 google-auth = "*"
-groq = "*"
 pgvector = "*"
 pillow = "*"
 phidata = "*"
 pypdf = "*"
-huggingface-hub = "*"
-sentence-transformers = "*"
-cryptography = "*"
-google-generativeai = "*"
+sqlalchemy = "*"
+openai = "*"
+gunicorn = "*"
+whitenoise = "*"
+dj-database-url = "*"
+beautifulsoup4 = "*"
+celery = "*"
+redis = "*"
+chonkie = {extras = ["semantic"], version = "*"}
 
 [dev-packages]
 
