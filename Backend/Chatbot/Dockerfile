@@ -1,4 +1,3 @@
-# Base Python image
 FROM python:3.11-slim
 
 # Environment variables
@@ -16,23 +15,21 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
 WORKDIR /Chatbot
 
-# Copy Pipenv files first (for caching)
+# Copy Pipenv files
 COPY Pipfile Pipfile.lock /Chatbot/
 
-# Upgrade pip and install pipenv
-RUN pip install --upgrade pip pipenv
+# 1. Install pipenv
+# 2. Generate requirements.txt from the lock file
+# 3. Use standard pip to install them globally
+RUN pip install --upgrade pip pipenv && \
+    pipenv requirements > requirements.txt && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Install dependencies inside Docker system Python (no venv)
-RUN pipenv install --system --deploy --ignore-pipfile --no-cache-dir
-
-# Copy the full Django project
+# Copy the full project
 COPY . /Chatbot/
 
-# Expose Django port
 EXPOSE 8080
 
-# Run Django migrations, collectstatic, then gunicorn
 CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn Chatbot.wsgi:application --bind 0.0.0.0:$PORT"]
