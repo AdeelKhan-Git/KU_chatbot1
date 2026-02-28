@@ -6,7 +6,7 @@ export const uploadJsonFile = async (file: File) => {
   try {
     const formData = new FormData();
     formData.append("file", file);
-    const response = await apiClient.post("bot/upload_file/", formData);
+    const response = await apiClient.post("bot/upload-file/", formData);
     return response;
   } catch (error) {
     if (error instanceof AxiosError) {
@@ -31,12 +31,23 @@ export interface FileRecordItem {
 export interface FileRecord {
   message: FileRecordItem[];
 }
+
+export interface UploadStatusResponse {
+  id: number;
+  status: "processing" | "completed" | "failed";
+  file: string;
+}
+
 export const getFileRecords = async (): Promise<FileRecord> => {
   try {
-    const response = await apiClient.get("bot/file_records");
+    const response = await apiClient.get("bot/file-records");
     return response.data;
   } catch (error) {
     console.error("Failed to fetch file records:", error);
     throw error;
   }
+};
+
+export const getUploadStatus = (id: number) => {
+  return apiClient.get<UploadStatusResponse>(`bot/upload-status/${id}/`);
 };
