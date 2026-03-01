@@ -77,16 +77,17 @@ def get_agent(user_id: str):
             db=PgMemoryDb(
                 table_name="agent_memory",
                 db_url=posgre_url,
-                user_id = user_id,
-                session_id = str(user_id)
+              
             ),
+            user_id = user_id,
+            session_id = str(user_id),
             create_user_memories=True,
+            update_user_memories_after_run=True,
             create_session_summary=True,
         ),
         storage=PgAgentStorage(
             table_name="University_of_Karachi",
             db_url=posgre_url,
-            user_id = user_id,
         ),
         knowledge_base=get_pdf_knowledge_base(PDF_DIR),
         api_key=open_api_key,
