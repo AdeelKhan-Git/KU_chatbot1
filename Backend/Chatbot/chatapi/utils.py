@@ -47,7 +47,7 @@ def get_pdf_knowledge_base(path: str):
         reader=SafePDFReader(
             chunk=True,
             chunking_strategy=DocumentChunking(
-                chunk_size=2500,
+                chunk_size=5000,
                 overlap=1500
             ),
         ),
