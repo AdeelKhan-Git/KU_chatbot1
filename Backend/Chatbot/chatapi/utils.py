@@ -97,7 +97,7 @@ def ask_phi(user, question):
     full_response = ""
 
     
-    for chunk in agent.run(question, stream=True):
+    for chunk in agent.run(question, user_id= user.id,session_id=str(user.id),stream=True):
         content = getattr(chunk, "content", None)
         if content:
             content = content.replace("<br>", "\n")
