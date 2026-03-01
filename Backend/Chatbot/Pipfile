@@ -24,7 +24,6 @@ openai = "*"
 gunicorn = "*"
 whitenoise = "*"
 dj-database-url = "*"
-beautifulsoup4 = "*"
 celery = "*"
 redis = "*"
 
