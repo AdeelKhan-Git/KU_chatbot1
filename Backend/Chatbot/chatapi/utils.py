@@ -89,6 +89,7 @@ def get_agent(user_id: str):
             table_name="University_of_Karachi",
             db_url=posgre_url,
         ),
+        user_id=user_id,
         knowledge_base=get_pdf_knowledge_base(PDF_DIR),
         api_key=open_api_key,
         description=description,
