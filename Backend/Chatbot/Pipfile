@@ -27,7 +27,7 @@ dj-database-url = "*"
 beautifulsoup4 = "*"
 celery = "*"
 redis = "*"
-chonkie = {extras = ["st", "semantic"], version = "*"}
+
 
 [dev-packages]
 

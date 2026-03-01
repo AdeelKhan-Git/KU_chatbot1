@@ -21,4 +21,3 @@ dj-database-url
 beautifulsoup4
 celery 
 redis
-chonkie[semantic,st]

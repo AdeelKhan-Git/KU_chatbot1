@@ -5,6 +5,7 @@ from phi.vectordb.pgvector import PgVector2
 from phi.agent import Agent,AgentMemory
 from .models import ChatMessage
 from phi.document.chunking.semantic import SemanticChunking
+from phi.document.chunking.document import DocumentChunking
 from .embedding import openai_embedder
 from phi.storage.agent.postgres import PgAgentStorage 
 from phi.memory.db.postgres import PgMemoryDb
@@ -45,10 +46,9 @@ def get_pdf_knowledge_base(path: str):
         ),
         reader=SafePDFReader(
             chunk=True,
-            chunking_strategy=SemanticChunking(
+            chunking_strategy=DocumentChunking(
                 chunk_size=2500,
-                similarity_threshold=0.6,
-                embedder=openai_embedder
+                overlap=1500
             ),
         ),
     )
