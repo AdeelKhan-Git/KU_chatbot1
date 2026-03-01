@@ -70,33 +70,42 @@ instructions = [
 
 
 
-agent = Agent(
-    model=OpenAIChat(id="gpt-4o"),
-    memory=AgentMemory(
-        db=PgMemoryDb(table_name="agent_memory", db_url=posgre_url),
-        create_user_memories=True,
-        create_session_summary=True
-    ),
-    storage=PgAgentStorage(table_name="University_of_Karachi", db_url=posgre_url),
-    knowledge_base=get_pdf_knowledge_base(PDF_DIR),
-    api_key = open_api_key,
-    description=description,
-    instructions=instructions,
-    add_history_to_messages=True,
-    num_history_responses=5,
-    markdown=True,
-    stream=True,
-    use_knowledge=True,
-    search_knowledge=True,
-    prevent_hallucinations=True,
-
-)
+def get_agent(user_id: str):
+    return Agent(
+        model=OpenAIChat(id="gpt-4o"),
+        memory=AgentMemory(
+            db=PgMemoryDb(
+                table_name="agent_memory",
+                db_url=posgre_url,
+                user_id = user_id,
+                session_id = str(user_id)
+            ),
+            create_user_memories=True,
+            create_session_summary=True,
+        ),
+        storage=PgAgentStorage(
+            table_name="University_of_Karachi",
+            db_url=posgre_url,
+            user_id = user_id,
+        ),
+        knowledge_base=get_pdf_knowledge_base(PDF_DIR),
+        api_key=open_api_key,
+        description=description,
+        instructions=instructions,
+        add_history_to_messages=True,
+        num_history_responses=5,
+        markdown=True,
+        stream=True,
+        use_knowledge=True,
+        search_knowledge=True,
+        prevent_hallucinations=True,
+    )
 
 
 def ask_phi(user, question):
     full_response = ""
 
-    
+    agent = get_agent(str(user.id))
     for chunk in agent.run(question, user_id= user.id,session_id=str(user.id),stream=True):
         content = getattr(chunk, "content", None)
         if content:
