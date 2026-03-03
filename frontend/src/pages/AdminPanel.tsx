@@ -56,7 +56,7 @@ const AdminPanel = () => {
         clearInterval(intervalRef.current!);
         setLoading(false);
       }
-    },10000); 
+    },30000); 
   };
 
   const fetchRecords = async () => {
