@@ -78,19 +78,28 @@ export default function ChatInterface() {
           {messages.map((msg) => (
             <div
               key={msg.id}
-              className={`flex ${
-                msg.sender === "user" ? "justify-end" : "justify-start"
-              }`}
+              className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"
+                }`}
             >
               <div
-                className={`max-w-[80%] rounded-xl px-4 py-3 text-base shadow ${
-                  msg.sender === "user"
+                className={`max-w-[80%] rounded-xl px-4 py-3 text-base shadow ${msg.sender === "user"
                     ? "bg-[#23242a] text-white border border-[#23242a] overflow-hidden [border-radius:16px_6px_16px_16px]  "
                     : "bg-[#23242a] text-gray-100 border border-[#23242a] [border-radius:6px_16px_16px_16px]"
-                }`}
+                  }`}
               >
                 <div className="markdown-body">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      table({ node, children, ...props }) {
+                        return (
+                        <div className="table-wrapper  sm:overflow-x-hidden overflow-x-scroll">
+                            <table {...props}>{children}</table>
+                          </div>
+                        );
+                      },
+                    }}
+                  >
                     {msg.text}
                   </ReactMarkdown>
                 </div>

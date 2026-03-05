@@ -1,4 +1,6 @@
+import { GoogleLogin } from "@react-oauth/google";
 import Header from "./Header";
+import { handleGoogleFailure, handleGoogleSuccess } from "@/hooks/useLogin";
 
 export default function HeroSection() {
   return (
@@ -18,7 +20,18 @@ export default function HeroSection() {
             life? AskUoK is here 24/7 to help you get instant answers, stay
             informed, and make your university journey smoother.
           </p>
+
+          <div className="mt-6 cta flex justify-center md:justify-start">
+            <GoogleLogin
+              theme="filled_black"
+              shape="circle"
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleFailure}
+              text="continue_with"
+            />
+          </div>
         </div>
+
       </div>
       <div className="smoke-container">
         <svg>

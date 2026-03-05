@@ -62,7 +62,7 @@ const UploadPdf: React.FC<UploadPdfProps> = ({ onUpload, file, loading, handleUp
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
-        className={`flex flex-col border-2 gap-4 sm:justify-center flex-wrap sm:flex-nowrap items-center border-dashed rounded-md w-full p-36 text-center transition-all duration-200 ${isDragOver
+        className={`flex flex-col border-2 gap-4 sm:justify-center flex-wrap sm:flex-nowrap items-center border-dashed rounded-md w-full sm:p-36 p-[65px] text-center transition-all duration-200 ${isDragOver
           ? "bg-green-500/20 backdrop-blur-md border border-green-500/30"
           : file
             ? "bg-blue-100/10 backdrop-blur-sm border border-white/20"

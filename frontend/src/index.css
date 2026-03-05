@@ -10,6 +10,7 @@
   box-sizing: border-box;
   scroll-behavior: smooth;
 }
+
 body {
   &::-webkit-scrollbar {
     display: none;
@@ -147,7 +148,23 @@ body {
 }
 
 .markdown-body a {
-    color: #a9c3fb;
-    font-weight: 600;
-    font-style: italic;
+  color: #a9c3fb;
+  font-weight: 600;
+  font-style: italic;
+}
+
+.markdown-body th {
+  white-space: nowrap;
+}
+
+@media (max-width:500px) {
+
+  /* Chrome, Safari, Edge */
+  .table-wrapper::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .table-wrapper::-webkit-scrollbar-thumb {
+    background: #2563eb;
+  }
 }

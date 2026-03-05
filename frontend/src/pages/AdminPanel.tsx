@@ -61,7 +61,7 @@ const AdminPanel = () => {
 
   const fetchRecords = async () => {
     try {
-      const response = await getFileRecords();
+      const response = await getFileRecords();  
       setData(response.message || []);
     } catch (error) {
       console.error("Failed to fetch file records:", error);
