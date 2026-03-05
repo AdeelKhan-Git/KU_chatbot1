@@ -99,7 +99,7 @@ class UploadStatusView(APIView):
 class GetChatDataView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     def get(self, request):
-        last_msg = timezone.now() - timedelta(minutes=5)
+        last_msg = timezone.now() - timedelta(minutes=10)
         try:
             chat = ChatMessage.objects.filter(
                 user=request.user,
