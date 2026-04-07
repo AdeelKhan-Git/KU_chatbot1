@@ -120,13 +120,13 @@ WSGI_APPLICATION = 'Chatbot.wsgi.application'
 #     }
 # }
 # DATABASES = {
-#         'default': {
+#     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': os.getenv("POSTGRES_DB"),
-#         'USER': os.getenv("POSTGRES_USER"),
-#         'PASSWORD': os.getenv("POSTGRES_PASSWORD"),
-#         'HOST': os.getenv("DB_HOST"),
-#         'PORT': os.getenv("DB_PORT"),
+#         'NAME': 'ai',
+#         'USER': 'ai',
+#         'PASSWORD': '',
+#         'HOST': 'pgvector',   
+#         'PORT': '5432',        
 #     }
 # }
 
@@ -169,11 +169,14 @@ REST_FRAMEWORK = {
 
 #celery 
 
+# CELERY_BROKER_URL = 'redis://redis:6379/0' #docker
 
-# CELERY_BROKER_URL = 'redis://localhost:6379/0' 
+# CELERY_RESULT_BACKEND = 'redis://redis:6379/0'
+
+# CELERY_BROKER_URL = 'redis://localhost:6379/0' #local
 # CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 CELERY_BROKER_URL = os.getenv("REDIS_PUBLIC_URL")
-CELERY_RESULT_BACKEND = os.getenv("REDIS_PUBLIC_URL")
+CELERY_RESULT_BACKEND = os.getenv("REDIS_PUBLIC_URL") #production
 
 
 # Internationalization
