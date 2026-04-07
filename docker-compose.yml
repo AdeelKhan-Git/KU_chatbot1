@@ -1,4 +1,3 @@
-version: "3.9"
 name: uok_chatbot
 
 services:
@@ -9,22 +8,40 @@ services:
     container_name: chatbot_app
     volumes:
       - ./Backend/Chatbot:/Chatbot
-      - ./Backend/Chatbot/data:/data
-
     ports:
-      - "8000:8000"   # Django API
+      - "8000:8080"
     env_file:
       - ./Backend/Chatbot/.env
     environment:
       DJANGO_SETTINGS_MODULE: Chatbot.settings
-      DB_HOST: pgvector
-      DB_PORT: "5432"
+      REDIS_PUBLIC_URL: redis://redis:6379/0
+      DATABASE_URL: postgresql+psycopg://ai:ai@pgvector:5432/ai
     depends_on:
       - pgvector
+      - redis
+
+  celery:
+    build:
+      context: ./Backend/Chatbot
+      dockerfile: Dockerfile
+    container_name: chatbot_celery
+    command: celery -A Chatbot worker --loglevel=info --concurrency=2
+    volumes:
+      - ./Backend/Chatbot:/Chatbot
+    env_file:
+      - ./Backend/Chatbot/.env
+    environment:
+      DJANGO_SETTINGS_MODULE: Chatbot.settings
+      REDIS_PUBLIC_URL: redis://redis:6379/0
+      DATABASE_URL: postgresql+psycopg://ai:ai@pgvector:5432/ai
+    depends_on:
+      - pgvector
+      - backend
+      - redis
 
   pgvector:
     image: phidata/pgvector:16
-    container_name: pgvector
+    container_name: pgvectorDev
     environment:
       POSTGRES_DB: ai
       POSTGRES_USER: ai
@@ -46,6 +63,11 @@ services:
       VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID}
     depends_on:
       - backend
+  redis:
+    image: redis:7-alpine
+    container_name: chatbot_redis
+    ports:
+      - "6379:6379"
 
 volumes:
   pgvolume:
