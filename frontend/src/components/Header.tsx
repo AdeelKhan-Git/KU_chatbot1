@@ -9,12 +9,7 @@ export default function Header() {
   const isAuthenticated = tokenManager.isAuthenticated();
   const user = tokenManager.getUser();
   const [menuOpen, setMenuOpen] = useState(false);
-
-    const { pathname } = useLocation();
-
-    console.log(pathname,"++++");
-    
-
+  const { pathname } = useLocation();
 
   return (
     <header className="flex flex-col w-full relative">
