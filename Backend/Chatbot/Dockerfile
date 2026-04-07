@@ -29,5 +29,4 @@ RUN pip install --upgrade pip pipenv && \
 COPY . /Chatbot/
 
 EXPOSE 8080
-
-CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && celery -A Chatbot worker --loglevel=info --concurrency=2 & exec gunicorn Chatbot.wsgi:application --bind 0.0.0.0:$PORT"]
+CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn Chatbot.wsgi:application --bind 0.0.0.0:$PORT"]
