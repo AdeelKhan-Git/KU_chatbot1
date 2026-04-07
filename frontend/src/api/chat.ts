@@ -22,7 +22,8 @@ export const chatMessageStream = async (
     }
     const possibleBaseURLs = [
       import.meta.env.VITE_BASE_URL,
-      "https://kuchatbot-production.up.railway.app/"
+      "https://kuchatbot-production.up.railway.app/",
+      // "http://localhost:8000/",
 
     ].filter(Boolean);
 
@@ -79,9 +80,9 @@ export const chatMessageStream = async (
           for (const line of lines) {
             if (line.startsWith("data: ")) {
               const token = line.slice(6);
-              if (token.trim()) {
-                tokenCount++;
-                onToken(token);
+              if (token !== "") {
+                // tokenCount++;
+                onToken(token.replace(/\\n/g, "\n"));
               }
             }
           }
@@ -99,13 +100,14 @@ export const chatMessageStream = async (
     throw error;
   }
 };
-// chat.ts
 export const fetchChatData = async () => {
   try {
     const token = tokenManager.getToken();
     if (!token) throw new Error("No authentication token available");
 
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}bot/chat-data/`, {
+    const baseURL = import.meta.env.VITE_BASE_URL || "http://localhost:8000/";
+    
+    const response = await fetch(`${baseURL}bot/chat-data/`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
