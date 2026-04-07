@@ -28,6 +28,7 @@ RUN pip install --upgrade pip pipenv && \
 # Copy the full project
 COPY . /Chatbot/
 
-EXPOSE 8080
+RUN chmod +x /Chatbot/start.sh
 
-CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && celery -A Chatbot worker --loglevel=info --concurrency=2 & gunicorn Chatbot.wsgi:application --bind 0.0.0.0:$PORT --worker-class gevent --workers 2 --timeout 120"]
+
+CMD ["/Chatbot/start.sh"]
