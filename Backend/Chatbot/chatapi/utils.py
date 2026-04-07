@@ -151,7 +151,7 @@ def get_agent(user_id: str):
 
     if user_id not in _agent_cache:
         _agent_cache[user_id] = Agent(
-            model=OpenAIChat(id="gpt-4o"),
+            model=OpenAIChat(id="gpt-4o-mini"),
             memory=AgentMemory(
                 db=PgMemoryDb(
                     table_name="agent_memory",
