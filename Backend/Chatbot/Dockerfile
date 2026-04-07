@@ -30,4 +30,4 @@ COPY . /Chatbot/
 
 EXPOSE 8080
 
-CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn Chatbot.wsgi:application --bind 0.0.0.0:$PORT --worker-class gevent --workers 2 --timeout 120"]
+CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && celery -A Chatbot worker --loglevel=info --concurrency=2 & gunicorn Chatbot.wsgi:application --bind 0.0.0.0:$PORT --worker-class gevent --workers 2 --timeout 120"]
