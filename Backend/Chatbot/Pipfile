@@ -27,6 +27,7 @@ dj-database-url = "*"
 celery = "*"
 redis = "*"
 tavily-python = "*"
+psycopg = "*"
 
 [dev-packages]
 
