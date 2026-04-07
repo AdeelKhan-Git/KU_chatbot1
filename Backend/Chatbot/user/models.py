@@ -63,13 +63,13 @@ class User(AbstractBaseUser):
       "Does the user have permissions to view the app `app_label`?"
       # Simplest possible answer: Yes, always
       return True
-    
+    @property
     def is_superuser(self):
        return self.is_admin
 
 
 
-
+    @staticmethod
     def generated_token(user):
         refresh = RefreshToken.for_user(user)      #token for every user 
 
