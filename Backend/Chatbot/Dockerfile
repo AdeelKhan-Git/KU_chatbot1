@@ -20,9 +20,7 @@ WORKDIR /Chatbot
 # Copy Pipenv files
 COPY Pipfile Pipfile.lock /Chatbot/
 
-# 1. Install pipenv
-# 2. Generate requirements.txt from the lock file
-# 3. Use standard pip to install them globally
+# Install dependencies
 RUN pip install --upgrade pip pipenv && \
     pipenv requirements > requirements.txt && \
     pip install --no-cache-dir -r requirements.txt
@@ -32,4 +30,4 @@ COPY . /Chatbot/
 
 EXPOSE 8080
 
-CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn Chatbot.wsgi:application --bind 0.0.0.0:$PORT"]
+CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && celery -A Chatbot worker --loglevel=info --concurrency=2 & exec gunicorn Chatbot.wsgi:application --bind 0.0.0.0:$PORT"]
