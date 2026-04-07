@@ -12,4 +12,4 @@ RUN npm install -g serve
 WORKDIR /app
 COPY --from=build-stage /frontend/dist .
 EXPOSE 8080
-CMD ["sh", "-c", "serve -s . -l $PORT"]
+CMD ["serve", "-s", ".", "-l", "8080"]
