@@ -105,7 +105,7 @@ export const fetchChatData = async () => {
     const token = tokenManager.getToken();
     if (!token) throw new Error("No authentication token available");
 
-    const baseURL = import.meta.env.VITE_BASE_URL || "http://localhost:8000/";
+    const baseURL = import.meta.env.VITE_BASE_URL;
     
     const response = await fetch(`${baseURL}bot/chat-data/`, {
       method: "GET",
