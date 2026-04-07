@@ -19,7 +19,7 @@ PDF_DIR = os.path.join(BASE_DIR, "media", "pdfs")
 
 posgre_url = os.getenv("DATABASE_URL")
 # posgre_url = "postgresql+psycopg://ai:ai@localhost:5532/ai"
-
+# posgre_url="postgresql+psycopg://ai:ai@pgvector:5432/ai"
 open_api_key = os.environ.get("OPENAI_API_KEY")
 travily_api_key = os.environ.get("TAVILY_API_KEY")
 
@@ -144,64 +144,69 @@ instructions = [
 ]
 
 
+_agent_cache: dict = {}
 
 def get_agent(user_id: str):
-    return Agent(
-        model=OpenAIChat(id="gpt-4o"),
-        memory=AgentMemory(
-            db=PgMemoryDb(
-                table_name="agent_memory",
-                db_url=posgre_url,
-              
-            ),
-            user_id = user_id,
-            create_user_memories=True,
-            update_user_memories_after_run=True,
-            create_session_summary=True,
-        ),
-        storage=PgAgentStorage(
-            table_name="University_of_Karachi",
-            db_url=posgre_url,
-        ),
-        user_id=user_id,
-        session_id = str(user_id),
-        knowledge_base=get_pdf_knowledge_base(PDF_DIR),
-        tools =[TavilyTools(
-                api_key=travily_api_key,
 
-        )] ,
-        api_key=open_api_key,
-        description=description,
-        instructions=instructions,
-        add_history_to_messages=True,
-        num_history_responses=3,
-        read_chat_history=True,
-        markdown=True,
-        stream=True,
-        use_knowledge=True,
-        search_knowledge=True,
-        prevent_hallucinations=False,
-        show_tool_calls=False,
-    )
+    if user_id not in _agent_cache:
+        _agent_cache[user_id] = Agent(
+            model=OpenAIChat(id="gpt-4o"),
+            memory=AgentMemory(
+                db=PgMemoryDb(
+                    table_name="agent_memory",
+                    db_url=posgre_url,
+                
+                ),
+                user_id = user_id,
+                create_user_memories=True,
+                update_user_memories_after_run=True,
+                create_session_summary=True,
+            ),
+            storage=PgAgentStorage(
+                table_name="University_of_Karachi",
+                db_url=posgre_url,
+            ),
+            user_id=user_id,
+            session_id = str(user_id),
+            knowledge_base=get_pdf_knowledge_base(PDF_DIR),
+            tools =[TavilyTools(
+                    api_key=travily_api_key,
+
+            )] ,
+            api_key=open_api_key,
+            description=description,
+            instructions=instructions,
+            add_history_to_messages=True,
+            num_history_responses=3,
+            read_chat_history=True,
+            markdown=True,
+            stream=True,
+            use_knowledge=True,
+            search_knowledge=True,
+            prevent_hallucinations=False,
+            show_tool_calls=False,
+        )
+    return _agent_cache[user_id]
 
 
 def ask_phi(user, question):
     full_response = ""
 
-    agent = get_agent(str(user.id))
-    for chunk in agent.run(question, user_id= user.id,session_id=str(user.id),stream=True):
-        content = getattr(chunk, "content", None)
-        if content:
-            content = content.replace("<br>", "\n")
-            full_response += content
-            yield content  
+    try:
+        agent = get_agent(str(user.id))
+        for chunk in agent.run(question, user_id= user.id,session_id=str(user.id),stream=True):
+            content = getattr(chunk, "content", None)
+            if content:
+                content = content.replace("<br>", "\n")
+                full_response += content
+                yield content  
 
-    
-    if not full_response.strip():
-        fallback = "I don't have information about that"
-        full_response = fallback
-        yield fallback
-
-    
-    ChatMessage.objects.create(user=user, role="user", content=question)
-    ChatMessage.objects.create(user=user, role="assistant", content=full_response.strip())
+        
+        if not full_response.strip():
+            fallback = "I don't have information about that"
+            full_response = fallback
+            yield fallback
+    finally:
+        if full_response.strip():
+            ChatMessage.objects.create(user=user, role="user", content=question)
+            ChatMessage.objects.create(user=user, role="assistant", content=full_response.strip())
