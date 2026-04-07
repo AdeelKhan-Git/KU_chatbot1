@@ -10,6 +10,7 @@ from .embedding import openai_embedder
 from phi.storage.agent.postgres import PgAgentStorage 
 from phi.memory.db.postgres import PgMemoryDb
 from phi.model.openai import OpenAIChat
+from openai import RateLimitError, AuthenticationError
 
 
 
@@ -206,7 +207,23 @@ def ask_phi(user, question):
             fallback = "I don't have information about that"
             full_response = fallback
             yield fallback
+    except RateLimitError as e:
+        if "insufficient_qouta" in str(e):
+            error_msg = "⚠️ The AI service has exceeded its quota. Please contact the administrator."
+        else:
+            error_msg = "⚠️ Too many requests at the moment. Please wait a few seconds and try again."
+        yield error_msg
+
+    except AuthenticationError:
+        error_msg = "⚠️ AI service authentication failed. Please contact the administrator."
+        yield error_msg
+
+    except Exception as e:
+        error_msg = "Something went wrong. Please try again"
+        yield error_msg
+
     finally:
-        if full_response.strip():
+        save_content = full_response.strip() if full_response.strip() else error_msg
+        if save_content and not error_msg:
             ChatMessage.objects.create(user=user, role="user", content=question)
-            ChatMessage.objects.create(user=user, role="assistant", content=full_response.strip())
+            ChatMessage.objects.create(user=user, role="assistant", content=save_content)

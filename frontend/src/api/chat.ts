@@ -106,7 +106,7 @@ export const fetchChatData = async () => {
     if (!token) throw new Error("No authentication token available");
 
     const baseURL = import.meta.env.VITE_BASE_URL || "https://kuchatbot-production.up.railway.app/";
-    console.log(baseURL)
+    
     
     const response = await fetch(`${baseURL}bot/chat-data/`, {
       method: "GET",
