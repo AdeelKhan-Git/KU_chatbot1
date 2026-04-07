@@ -1,0 +1,25 @@
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    DJANGO_SETTINGS_MODULE=Chatbot.settings
+
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libpq-dev \
+    python3-dev \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /Chatbot
+
+COPY Pipfile Pipfile.lock /Chatbot/
+
+RUN pip install --upgrade pip pipenv && \
+    pipenv requirements > requirements.txt && \
+    pip install --no-cache-dir -r requirements.txt
+
+COPY . /Chatbot/
+
+CMD ["celery", "-A", "Chatbot", "worker", "--loglevel=info", "--concurrency=2"]
