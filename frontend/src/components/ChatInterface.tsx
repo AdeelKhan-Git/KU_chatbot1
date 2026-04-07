@@ -7,7 +7,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 export default function ChatInterface() {
-  const { messages, isLoading, sendMessage, clearMessages } = useChat();
+  const { messages, isLoading,sendMessage, clearMessages } = useChat();
   const [inputValue, setInputValue] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -106,7 +106,7 @@ export default function ChatInterface() {
               </div>
             </div>
           ))}
-          {isLoading ? <p className="text-white">Thinking...</p> : ""}
+          {/* {isLoading ? <p className="text-white">Thinking...</p> : ""} */}
           <div ref={messagesEndRef} />
         </div>
 
@@ -119,7 +119,7 @@ export default function ChatInterface() {
         >
           <input
             type="text"
-            className="flex-1 rounded-lg px-4 py-3 bg-[#23242a] text-white border border-[#23242a] focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-500"
+            className="flex-1 sm:min-w-full min-w-[177px] rounded-lg px-4 py-3 bg-[#23242a] text-white border border-[#23242a] focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-500"
             placeholder="Ask anything about University of Karachi..."
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
