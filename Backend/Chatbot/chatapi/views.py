@@ -1,5 +1,3 @@
-from datetime import timedelta
-from django.utils import timezone
 from rest_framework.views import APIView
 from rest_framework import status,permissions
 from rest_framework.parsers import MultiPartParser
@@ -8,27 +6,33 @@ from .models import UploadRecord,ChatMessage
 from .serializer import ChatMessageSerializer,UploadSerializer
 from .utils import ask_phi
 from .task import process_pdf
+from django.http import StreamingHttpResponse
 
 # Create your views here.
-
-
 class ChatBotAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     def post(self, request):
         prompt = request.data.get('prompt')
 
         if not prompt:
-            return Response({'error':'prompt is required'},status=status.HTTP_400_BAD_REQUEST)
-        
-        try:
-            full_response = ""
-            for chunk in ask_phi(request.user, prompt):
-                chunk = chunk.replace("<br>", "\n")
-                full_response += chunk
+            return Response({'error': 'prompt is required'}, status=status.HTTP_400_BAD_REQUEST)
 
-            return Response({"response": full_response.strip()})
-        except Exception as e:
-            return Response({'error': str(e)},status=status.HTTP_400_BAD_REQUEST)
+        def generate():
+            try:
+                for chunk in ask_phi(request.user, prompt):
+                    safe_chunk = chunk.replace("\n", "\\n")
+                    yield f"data: {safe_chunk}\n\n"
+            except Exception as e:
+                yield f"data: [ERROR] {str(e)}\n\n"
+
+        return StreamingHttpResponse(
+            generate(),
+            content_type='text/event-stream',
+            headers={
+                'Cache-Control': 'no-cache',
+                'X-Accel-Buffering': 'no',  
+            }
+        )
         
                     
 class UploadFileView(APIView):
@@ -99,12 +103,10 @@ class UploadStatusView(APIView):
 class GetChatDataView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     def get(self, request):
-        last_msg = timezone.now() - timedelta(minutes=10)
         try:
             chat = ChatMessage.objects.filter(
                 user=request.user,
-                timestemp__gte = last_msg,
-                ).order_by('timestemp')
+                ).order_by('timestemp')[:20]
             
            
             serializer = ChatMessageSerializer(chat, many=True)
