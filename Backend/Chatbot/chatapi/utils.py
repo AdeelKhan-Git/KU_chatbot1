@@ -192,6 +192,7 @@ def get_agent(user_id: str):
 
 def ask_phi(user, question):
     full_response = ""
+    error_msg = None
 
     try:
         agent = get_agent(str(user.id))
@@ -208,7 +209,7 @@ def ask_phi(user, question):
             full_response = fallback
             yield fallback
     except RateLimitError as e:
-        if "insufficient_qouta" in str(e):
+        if "insufficient_quota" in str(e):
             error_msg = "⚠️ The AI service has exceeded its quota. Please contact the administrator."
         else:
             error_msg = "⚠️ Too many requests at the moment. Please wait a few seconds and try again."
@@ -223,7 +224,6 @@ def ask_phi(user, question):
         yield error_msg
 
     finally:
-        save_content = full_response.strip() if full_response.strip() else error_msg
-        if save_content and not error_msg:
+        if full_response.strip() and not error_msg:
             ChatMessage.objects.create(user=user, role="user", content=question)
-            ChatMessage.objects.create(user=user, role="assistant", content=save_content)
+            ChatMessage.objects.create(user=user, role="assistant", content=full_response.strip())
