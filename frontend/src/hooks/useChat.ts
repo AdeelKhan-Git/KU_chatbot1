@@ -1,7 +1,6 @@
-// useChat.ts
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { chatMessage, fetchChatData } from "@/api/chat";
+import { chatMessageStream, fetchChatData } from "@/api/chat";
 
 export interface Message {
   id: string;
@@ -12,11 +11,11 @@ export interface Message {
 export const useChat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false);
 
-  // Load historical chat messages from API
   const loadChatHistory = useCallback(async () => {
     try {
-      const history = await fetchChatData(); // fetch chat-data API
+      const history = await fetchChatData();
       const mapped = history.map((msg: any) => ({
         id: msg.id.toString(),
         sender: msg.role === "user" ? "user" : "bot",
@@ -32,11 +31,11 @@ export const useChat = () => {
     loadChatHistory();
   }, [loadChatHistory]);
 
-  // Send new user message and receive bot response
   const sendMessage = useCallback(
     async (message: string) => {
       if (!message.trim() || isLoading) return;
 
+      // Add user message immediately
       const userMessage: Message = {
         id: Date.now().toString(),
         text: message.trim(),
@@ -44,27 +43,40 @@ export const useChat = () => {
       };
       setMessages((prev) => [...prev, userMessage]);
       setIsLoading(true);
+      setIsStreaming(false);
+
+      // Add empty bot message that we'll fill in as chunks arrive
+      const botId = (Date.now() + 1).toString();
+      setMessages((prev) => [
+        ...prev,
+        { id: botId, text: "", sender: "bot" },
+      ]);
 
       try {
-        const botResponse = await chatMessage(message.trim());
-        const botMessage: Message = {
-          id: (Date.now() + 1).toString(),
-          text: botResponse,
-          sender: "bot",
-        };
-        setMessages((prev) => [...prev, botMessage]);
+        await chatMessageStream(message.trim(), (token: string) => {
+          // Append each chunk to the bot message in real time
+          setMessages((prev) =>
+            prev.map((msg) =>
+              msg.id === botId
+                ? { ...msg, text: msg.text + token }
+                : msg
+            )
+          );
+        });
       } catch (error) {
         console.error("Chat error:", error);
         toast.error("Failed to send message. Please try again.");
+        // Remove the empty bot message on error
+        setMessages((prev) => prev.filter((msg) => msg.id !== botId));
       } finally {
         setIsLoading(false);
+        setIsStreaming(false);
       }
     },
     [isLoading]
   );
 
-  // Clear all messages
   const clearMessages = useCallback(() => setMessages([]), []);
 
-  return { messages, isLoading, sendMessage, clearMessages };
+  return { messages, isLoading,isStreaming, sendMessage, clearMessages };
 };
