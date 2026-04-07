@@ -119,7 +119,7 @@ export default function ChatInterface() {
         >
           <input
             type="text"
-            className="flex-1 sm:min-w-full min-w-[177px] rounded-lg px-4 py-3 bg-[#23242a] text-white border border-[#23242a] focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-500"
+            className="flex-1 sm:min-w-auto min-w-[177px] rounded-lg px-4 py-3 bg-[#23242a] text-white border border-[#23242a] focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-500"
             placeholder="Ask anything about University of Karachi..."
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
