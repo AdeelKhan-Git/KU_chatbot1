@@ -8,34 +8,39 @@ export interface Message {
   sender: "user" | "bot";
 }
 
-export const useChat = () => {
+export const useChat = (
+  sessionId: string,
+  pushSession: (id: string, title: string) => void
+) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
 
-  const loadChatHistory = useCallback(async () => {
-    try {
-      const history = await fetchChatData();
-      const mapped = history.map((msg: any) => ({
-        id: msg.id.toString(),
-        sender: msg.role === "user" ? "user" : "bot",
-        text: msg.content,
-      }));
-      setMessages(mapped);
-    } catch (error) {
-      console.error("Failed to load chat history:", error);
-    }
-  }, []);
-
   useEffect(() => {
-    loadChatHistory();
-  }, [loadChatHistory]);
+    if (!sessionId) return;
+    setMessages([]);
+    fetchChatData(sessionId)
+      .then((history) => {
+        if (!history || history.length === 0) return; // 👈 new session = no history, just show empty
+        const mapped = history.map((msg: any) => ({
+          id: msg.id.toString(),
+          sender: msg.role === "user" ? "user" : "bot",
+          text: msg.content,
+        }));
+        setMessages(mapped);
+      })
+      .catch((err) => {
+        console.error("Failed to load chat history:", err);
+        // 👈 don't crash — just start with empty messages
+      });
+  }, [sessionId]);
 
   const sendMessage = useCallback(
     async (message: string) => {
-      if (!message.trim() || isLoading) return;
+      if (!message.trim() || isLoading || !sessionId) return; // 👈 guard against empty sessionId
 
-      // Add user message immediately
+      pushSession(sessionId, message.trim());
+
       const userMessage: Message = {
         id: Date.now().toString(),
         text: message.trim(),
@@ -43,40 +48,32 @@ export const useChat = () => {
       };
       setMessages((prev) => [...prev, userMessage]);
       setIsLoading(true);
-      setIsStreaming(false);
+      setIsStreaming(true);
 
-      // Add empty bot message that we'll fill in as chunks arrive
       const botId = (Date.now() + 1).toString();
-      setMessages((prev) => [
-        ...prev,
-        { id: botId, text: "", sender: "bot" },
-      ]);
+      setMessages((prev) => [...prev, { id: botId, text: "", sender: "bot" }]);
 
       try {
-        await chatMessageStream(message.trim(), (token: string) => {
-          // Append each chunk to the bot message in real time
+        await chatMessageStream(message.trim(), sessionId, (token: string) => {
           setMessages((prev) =>
             prev.map((msg) =>
-              msg.id === botId
-                ? { ...msg, text: msg.text + token }
-                : msg
+              msg.id === botId ? { ...msg, text: msg.text + token } : msg
             )
           );
         });
       } catch (error) {
         console.error("Chat error:", error);
         toast.error("Failed to send message. Please try again.");
-        // Remove the empty bot message on error
         setMessages((prev) => prev.filter((msg) => msg.id !== botId));
       } finally {
         setIsLoading(false);
         setIsStreaming(false);
       }
     },
-    [isLoading]
+    [isLoading, sessionId, pushSession]
   );
 
   const clearMessages = useCallback(() => setMessages([]), []);
 
-  return { messages, isLoading,isStreaming, sendMessage, clearMessages };
+  return { messages, isLoading, isStreaming, sendMessage, clearMessages };
 };
