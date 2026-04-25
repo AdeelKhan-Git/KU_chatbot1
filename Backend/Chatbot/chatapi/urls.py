@@ -1,4 +1,4 @@
-from .views import ChatBotAPIView,UploadFileView,UploadedDataListView,GetChatDataView,UploadStatusView
+from .views import ChatBotAPIView,UploadFileView,UploadedDataListView,GetChatDataView,UploadStatusView,ChatSessionListView,DeleteSessionView
 from django.urls import path
 from rest_framework_simplejwt.views import TokenVerifyView
 
@@ -7,6 +7,8 @@ urlpatterns = [
     path('upload-file/',UploadFileView.as_view(), name = 'uploadfile'),
     path('upload-status/<int:pdf_id>/',UploadStatusView.as_view(), name = 'uploadstatus'),
     path('chat-data/',GetChatDataView.as_view(), name = 'chatdata'),
+    path('sessions/', ChatSessionListView.as_view(), name='sessions'),
+    path('sessions/<str:session_id>/delete/', DeleteSessionView.as_view(), name='session_delete'),
     path('file-records',UploadedDataListView.as_view(), name= 'record_list'), 
     path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),  
 ]
