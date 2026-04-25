@@ -13,13 +13,16 @@ class ChatBotAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     def post(self, request):
         prompt = request.data.get('prompt')
+        session_id = request.data.get('session_id')
 
         if not prompt:
             return Response({'error': 'prompt is required'}, status=status.HTTP_400_BAD_REQUEST)
+        if not session_id:
+            return Response({'error': 'session_id is required'}, status=status.HTTP_400_BAD_REQUEST)
 
         def generate():
             try:
-                for chunk in ask_phi(request.user, prompt):
+                for chunk in ask_phi(request.user, prompt, session_id):
                     safe_chunk = chunk.replace("\n", "\\n")
                     yield f"data: {safe_chunk}\n\n"
             except Exception as e:
@@ -104,9 +107,13 @@ class GetChatDataView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     def get(self, request):
         try:
-            chat = ChatMessage.objects.filter(
-                user=request.user,
-                ).order_by('timestemp')[:20]
+
+            session_id = request.query_params.get('session_id')
+            if not session_id:
+                return Response({'error': 'session id is required'}, status= status.HTTP_400_BAD_REQUEST)
+            chat = list(
+                ChatMessage.objects.filter(user=request.user, session_id=session_id).order_by('-timestemp')[:20]
+            )[::-1]
             
            
             serializer = ChatMessageSerializer(chat, many=True)
@@ -114,4 +121,43 @@ class GetChatDataView(APIView):
         
         except Exception as e:
             return Response({'error':str(e)},status=status.HTTP_400_BAD_REQUEST)
+
+class ChatSessionListView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get(self, request):
+        try:
+            messages = ChatMessage.objects.filter(
+                user=request.user, 
+                role='user'
+            ).order_by('timestemp')
+
+            seen = {}
+            for msg in messages:
+                if msg.session_id not in seen:
+                    seen[msg.session_id] = {
+                        'session_id': msg.session_id,
+                        'title': msg.content[:60],  
+                        'last_activity': msg.timestemp
+                    }
+                else:
+                    seen[msg.session_id]['last_activity'] = msg.timestemp  
+
         
+            sessions = sorted(seen.values(), key=lambda x: x['last_activity'], reverse=True)
+            return Response({'sessions': sessions}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error':str(e)},status=status.HTTP_400_BAD_REQUEST)
+
+class DeleteSessionView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+
+    def delete(self, request, session_id):
+        try:
+            ChatMessage.objects.filter(
+                user=request.user, 
+                session_id=session_id
+            ).delete()
+            return Response({'message': 'Session deleted'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error':str(e)},status=status.HTTP_400_BAD_REQUEST)
