@@ -19,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PDF_DIR = os.path.join(BASE_DIR, "media", "pdfs")
 
 posgre_url = os.getenv("DATABASE_URL")
-# posgre_url = "postgresql+psycopg://ai:ai@localhost:5532/ai"
+# # posgre_url = "postgresql+psycopg://ai:ai@localhost:5532/ai"
 # posgre_url="postgresql+psycopg://ai:ai@pgvector:5432/ai"
 open_api_key = os.environ.get("OPENAI_API_KEY")
 travily_api_key = os.environ.get("TAVILY_API_KEY")
@@ -147,10 +147,10 @@ instructions = [
 
 _agent_cache: dict = {}
 
-def get_agent(user_id: str):
-
-    if user_id not in _agent_cache:
-        _agent_cache[user_id] = Agent(
+def get_agent(user_id: str, session_id=None):
+    cache_key = session_id or user_id
+    if cache_key not in _agent_cache:
+        _agent_cache[cache_key] = Agent(
             model=OpenAIChat(id="gpt-4o-mini"),
             memory=AgentMemory(
                 db=PgMemoryDb(
@@ -168,7 +168,7 @@ def get_agent(user_id: str):
                 db_url=posgre_url,
             ),
             user_id=user_id,
-            session_id = str(user_id),
+            session_id = session_id or user_id,
             knowledge_base=get_pdf_knowledge_base(PDF_DIR),
             tools =[TavilyTools(
                     api_key=travily_api_key,
@@ -187,16 +187,16 @@ def get_agent(user_id: str):
             prevent_hallucinations=False,
             show_tool_calls=False,
         )
-    return _agent_cache[user_id]
+    return _agent_cache[cache_key]
 
 
-def ask_phi(user, question):
+def ask_phi(user, question, session_id= None):
     full_response = ""
     error_msg = None
 
     try:
-        agent = get_agent(str(user.id))
-        for chunk in agent.run(question, user_id= user.id,session_id=str(user.id),stream=True):
+        agent = get_agent(str(user.id), session_id)
+        for chunk in agent.run(question, user_id= user.id,session_id=session_id,stream=True):
             content = getattr(chunk, "content", None)
             if content:
                 content = content.replace("<br>", "\n")
@@ -225,5 +225,5 @@ def ask_phi(user, question):
 
     finally:
         if full_response.strip() and not error_msg:
-            ChatMessage.objects.create(user=user, role="user", content=question)
-            ChatMessage.objects.create(user=user, role="assistant", content=full_response.strip())
+            ChatMessage.objects.create(user=user, role="user", content=question, session_id=session_id)
+            ChatMessage.objects.create(user=user, role="assistant", content=full_response.strip(), session_id=session_id)
