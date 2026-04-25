@@ -9,7 +9,7 @@ class AdminUpload(admin.ModelAdmin):
 
 @admin.register(ChatMessage)
 class AdminChatmessage(admin.ModelAdmin):
-    list_display = ['id', 'user','role','short_content']
+    list_display = ['id', 'user','role','session_id','short_content']
 
     def short_content(self, obj):
         obj = obj.content.split()
