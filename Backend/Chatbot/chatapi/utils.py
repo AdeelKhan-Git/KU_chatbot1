@@ -132,12 +132,17 @@ instructions = [
     "Use Markdown tables for fees, seats, closing percentages, and comparative data.",
     "Use bullet points for lists and step-by-step instructions.",
     "Keep responses concise but complete — no unnecessary filler text.",
-    "When you retrieve information using TavilyTools web search, always show the sources "
-    "at the bottom of your response in a 'Sources' section like this: "
-    "'**Sources:**' followed by the URLs returned by the search. "
-    "But NEVER mention TavilyTools or any tool name — just show the URLs naturally. "
-    "For information retrieved from the knowledge base, do NOT show any sources section."
 
+    "IMPORTANT: When you use web search and get results, you MUST always include a "
+    "'**Sources:**' section at the very bottom of your response. "
+    "List every URL from the search results as a clickable markdown link like this: "
+    "- [Source Title](https://url.com) "
+    "Do this every single time web search is used. Never skip the sources section after a web search. "
+    "Do NOT mention TavilyTools or any tool name — just show the URLs naturally.",
+
+    "For information retrieved ONLY from the knowledge base (no web search used), "
+    "do NOT show any sources section.",
+    
     # ── TONE ────────────────────────────────────────────────────────────────
     "Respond in a friendly, helpful, and professional tone.",
     "If a user greets you, respond warmly and ask how you can help them today.",
